@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flyer Sí Ahorro</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .flyer {
+    width: 148mm;
+    min-height: 210mm;
+    background: #0a0705;
+    color: white;
+    padding: 28px 26px 24px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* Fondo decorativo */
+  .flyer::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(249,115,22,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .flyer::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    left: -40px;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(249,115,22,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* LOGO */
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+  }
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #F97316, #ea580c);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo-icon svg { width: 20px; height: 20px; }
+  .logo-text {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+  .logo-text span { color: #F97316; }
+  .logo-sub {
+    font-size: 9px;
+    color: #aaa;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: -10px;
+  }
+
+  /* HEADLINE */
+  .headline-box {
+    background: linear-gradient(135deg, rgba(249,115,22,0.12), rgba(234,88,12,0.06));
+    border: 1px solid rgba(249,115,22,0.30);
+    border-radius: 16px;
+    padding: 18px 20px;
+    text-align: center;
+  }
+  .headline-q {
+    font-size: 13px;
+    color: #ccc;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .headline-main {
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+  .headline-main .orange { color: #F97316; }
+  .headline-main .white { color: #ffffff; }
+  .headline-sub {
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: #ccc;
+    line-height: 1.4;
+  }
+  .headline-sub strong { color: #F97316; font-size: 13px; }
+
+  /* FOTO / VISUAL */
+  .visual-band {
+    background: linear-gradient(135deg, #1a1108, #120c05);
+    border: 1px solid rgba(249,115,22,0.15);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .bill-mockup {
+    flex-shrink: 0;
+    width: 80px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px 7px;
+    font-size: 5.5px;
+    color: #333;
+    line-height: 1.7;
+  }
+  .bill-mockup .bill-header { font-weight: 800; font-size: 6px; color: #F97316; border-bottom: 1px solid #eee; padding-bottom: 3px; margin-bottom: 4px; }
+  .bill-mockup .bill-row { display: flex; justify-content: space-between; }
+  .bill-mockup .bill-total { margin-top: 4px; border-top: 1px solid #eee; padding-top: 3px; font-weight: 800; font-size: 6.5px; display: flex; justify-content: space-between; color: #111; }
+  .bill-mockup .bill-saving { text-align: center; margin-top: 5px; background: #F97316; color: white; border-radius: 4px; padding: 3px; font-weight: 800; font-size: 6px; }
+  .visual-text { flex: 1; }
+  .visual-text p { font-size: 10.5px; color: #ddd; line-height: 1.5; }
+  .visual-text strong { color: #F97316; font-size: 13px; display: block; margin-bottom: 4px; font-weight: 800; }
+
+  /* CHECKS */
+  .checks { display: flex; flex-direction: column; gap: 8px; }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .check-icon {
+    width: 20px;
+    height: 20px;
+    background: rgba(249,115,22,0.15);
+    border: 1.5px solid #F97316;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .check-icon svg { width: 10px; height: 10px; color: #F97316; }
+  .check-text { font-size: 11px; color: #ddd; line-height: 1.4; }
+  .check-text strong { color: white; font-weight: 700; }
+
+  /* BANNER */
+  .banner {
+    background: linear-gradient(135deg, #F97316, #ea580c);
+    border-radius: 14px;
+    padding: 14px 18px;
+    text-align: center;
+  }
+  .banner-top { font-size: 11px; color: rgba(255,255,255,0.85); font-weight: 600; }
+  .banner-main { font-size: 18px; font-weight: 900; color: white; line-height: 1.2; margin: 4px 0; letter-spacing: -0.3px; }
+  .banner-sub { font-size: 10px; color: rgba(255,255,255,0.85); }
+  .banner-sub svg { width: 10px; height: 10px; display: inline; vertical-align: middle; margin-right: 3px; }
+
+  /* SOCIAL PROOF */
+  .social-proof {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(249,115,22,0.08);
+    border: 1px solid rgba(249,115,22,0.20);
+    border-radius: 10px;
+    padding: 10px 16px;
+  }
+  .sp-icons { display: flex; gap: -4px; }
+  .sp-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #F97316, #ea580c);
+    border: 2px solid #0a0705;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -6px;
+    font-size: 10px;
+    font-weight: 800;
+    color: white;
+  }
+  .sp-icon:first-child { margin-left: 0; }
+  .sp-text { font-size: 11px; color: #ddd; }
+  .sp-text strong { color: #F97316; font-size: 13px; font-weight: 800; }
+
+  /* CTA */
+  .cta-box {
+    background: linear-gradient(135deg, rgba(249,115,22,0.10), rgba(234,88,12,0.05));
+    border: 1.5px solid rgba(249,115,22,0.35);
+    border-radius: 16px;
+    padding: 16px 18px;
+    text-align: center;
+  }
+  .cta-wa-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .wa-circle {
+    width: 34px;
+    height: 34px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .wa-circle svg { width: 20px; height: 20px; }
+  .cta-label { font-size: 12px; color: #ddd; font-weight: 600; text-align: left; line-height: 1.3; }
+  .cta-label strong { color: white; font-size: 13px; }
+  .cta-phone {
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: white;
+    line-height: 1;
+  }
+  .cta-phone span { color: #F97316; }
+  .cta-wa-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(37,211,102,0.12);
+    border: 1px solid rgba(37,211,102,0.25);
+    color: #25D366;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 3px 10px;
+    margin-top: 6px;
+  }
+  .cta-wa-tag svg { width: 9px; height: 9px; }
+
+  /* FOOTER */
+  .footer-tagline {
+    text-align: center;
+    font-size: 10.5px;
+    color: #888;
+    font-style: italic;
+    padding-top: 4px;
+  }
+  .footer-tagline strong { color: #F97316; font-style: normal; }
+
+  /* PRINT */
+  @media print {
+    body { background: white; padding: 0; margin: 0; }
+    .flyer { width: 148mm; min-height: 210mm; }
+    .print-btn { display: none; }
+  }
+
+  .print-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #F97316;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(249,115,22,0.4);
+  }
+  .print-btn:hover { background: #ea580c; }
+</style>
+</head>
+<body>
+
+<div class="flyer">
+
+  <!-- LOGO -->
+  <div>
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+      </div>
+      <div class="logo-text"><span>Sí</span> Ahorro</div>
+    </div>
+    <div class="logo-sub">Asesoría Energética</div>
+  </div>
+
+  <!-- HEADLINE -->
+  <div class="headline-box">
+    <div class="headline-q">¿ESTÁS PAGANDO</div>
+    <div class="headline-main">
+      <span class="orange">DE MÁS</span><br>
+      <span class="white">EN TU FACTURA</span><br>
+      <span class="white">DE LUZ? ⚡</span>
+    </div>
+    <div class="headline-sub">Descubre en 2 minutos si puedes ahorrar · <strong>GRATIS</strong></div>
+  </div>
+
+  <!-- VISUAL BAND -->
+  <div class="visual-band">
+    <div class="bill-mockup">
+      <div class="bill-header">FACTURA LUZ</div>
+      <div class="bill-row"><span>Energía activa</span><span>58,40€</span></div>
+      <div class="bill-row"><span>Potencia</span><span>18,20€</span></div>
+      <div class="bill-row"><span>Impuestos</span><span>12,35€</span></div>
+      <div class="bill-total"><span>TOTAL</span><span>88,95€</span></div>
+      <div class="bill-saving">Con Sí Ahorro: 61€ ✓</div>
+    </div>
+    <div class="visual-text">
+      <strong>Ahorra hasta un 30%</strong>
+      <p>Analizamos tu factura actual y te conseguimos la tarifa más barata del mercado libre sin que muevas un dedo.</p>
+    </div>
+  </div>
+
+  <!-- CHECKS -->
+  <div class="checks">
+    <div class="check-item">
+      <div class="check-icon">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+      </div>
+      <div class="check-text">En el <strong>90% de los casos</strong> conseguimos ahorrar dinero</div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+      </div>
+      <div class="check-text"><strong>Sin compromiso</strong> · Sin permanencia · <strong>100% gratuito</strong></div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+      </div>
+      <div class="check-text">Para <strong>particulares</strong> y <strong>negocios</strong> de toda España</div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+      </div>
+      <div class="check-text">Cambio de tarifa en <strong>2-3 días hábiles</strong> · Sin cortes de suministro</div>
+    </div>
+  </div>
+
+  <!-- BANNER -->
+  <div class="banner">
+    <div class="banner-top">NO SIGAS PAGANDO DE MÁS.</div>
+    <div class="banner-main">COMPARA Y AHORRA.</div>
+    <div class="banner-sub">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="5"/><polyline points="6,3 6,6 8,8"/></svg>
+      Respuesta en menos de 24 horas
+    </div>
+  </div>
+
+  <!-- SOCIAL PROOF -->
+  <div class="social-proof">
+    <div class="sp-icons">
+      <div class="sp-icon">A</div>
+      <div class="sp-icon">M</div>
+      <div class="sp-icon">J</div>
+      <div class="sp-icon">+</div>
+    </div>
+    <div class="sp-text"><strong>+673 clientes</strong> ya están ahorrando con nosotros</div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-box">
+    <div class="cta-wa-row">
+      <div class="wa-circle">
+        <svg viewBox="0 0 24 24" fill="white">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.570-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+      </div>
+      <div class="cta-label">Escríbeme ahora y<br><strong>reviso tu factura GRATIS</strong></div>
+    </div>
+    <div class="cta-phone">655 <span>94</span>1 658</div>
+    <div>
+      <span class="cta-wa-tag">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg>
+        WhatsApp directo · Respuesta inmediata
+      </span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-tagline">
+    Si no puedes ahorrar, <strong>te lo digo igualmente.</strong>
+  </div>
+
+</div>
+
+<button class="print-btn" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+
+</body>
+</html>
