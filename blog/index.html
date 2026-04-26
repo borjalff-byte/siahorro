@@ -15,10 +15,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        :root { --orange: #F97316; --orange-dk: #EA580C; --bg: #171410; --bg2: #1f1a14; --text: #FFFFFF; --t60: rgba(255,255,255,0.60); --t35: rgba(255,255,255,0.35); }
+        :root { --orange: #F97316; --orange-dk: #EA580C; --bg: #171410; --text: #FFFFFF; --t60: rgba(255,255,255,0.60); --t35: rgba(255,255,255,0.35); }
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-
         nav { position: sticky; top: 0; z-index: 100; background: rgba(23,20,16,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 64px; }
         .nav-logo { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
         .nav-logo img { height: 32px; width: auto; }
@@ -28,11 +27,9 @@
         .nav-links a:hover { color: var(--text); }
         .nav-cta { background: var(--orange); color: #fff; border: none; border-radius: 8px; padding: .5rem 1.1rem; font-size: .88rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background .2s; }
         .nav-cta:hover { background: var(--orange-dk); }
-
         .hero { padding: 4rem 1.5rem 2.5rem; max-width: 900px; margin: 0 auto; }
         .hero h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: .8rem; }
         .hero p { color: var(--t60); font-size: 1.05rem; line-height: 1.7; }
-
         .grid { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
         .card { background: #1f1a14; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; overflow: hidden; text-decoration: none; color: var(--text); transition: border-color .2s, transform .2s; display: flex; flex-direction: column; }
         .card:hover { border-color: var(--orange); transform: translateY(-3px); }
@@ -43,21 +40,14 @@
         .card-date { font-size: .78rem; color: var(--t35); }
         .card h2 { font-size: 1rem; font-weight: 600; line-height: 1.45; flex: 1; }
         .card-link { font-size: .85rem; color: var(--orange); font-weight: 600; margin-top: .4rem; }
-
-        .empty { max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; color: var(--t60); }
-
         footer { border-top: 1px solid rgba(255,255,255,0.06); padding: 2rem 1.5rem; text-align: center; color: var(--t35); font-size: .82rem; }
         footer a { color: var(--t60); text-decoration: none; }
-
         @media (max-width: 680px) { .nav-links { display: none; } .hero { padding: 2.5rem 1rem 1.5rem; } .grid { padding: 0 1rem 3rem; } }
     </style>
 </head>
 <body>
 <nav>
-    <a href="/" class="nav-logo">
-        <img src="/logo/logo-transparent-png.png" alt="Sí Ahorro">
-        <span>Sí Ahorro</span>
-    </a>
+    <a href="/" class="nav-logo"><img src="/logo/logo-transparent-png.png" alt="Sí Ahorro"><span>Sí Ahorro</span></a>
     <ul class="nav-links">
         <li><a href="/#como-funciona">Cómo funciona</a></li>
         <li><a href="/#tarifas">Tarifas</a></li>
@@ -66,34 +56,43 @@
     </ul>
     <a href="/#subir-factura" class="nav-cta">Analizar factura</a>
 </nav>
-
 <div class="hero">
     <h1>Blog de ahorro energético</h1>
     <p>Guías y consejos prácticos para reducir tu factura de luz y gas en España.</p>
 </div>
-
 <div class="grid">
-<a href="/blog/como-ahorrar-en-la-factura-del-gas-en-invierno-guia-practica-para-espanoles/" class="card" data-art="como-ahorrar-en-la-factura-del-gas-en-invierno-guia-practica-para-espanoles" data-titulo="Cómo Ahorrar en la Factura del Gas en Invierno: Guía Práctica para Españoles" data-fecha="2026-04-26" data-img="https://source.unsplash.com/600x400/?gas,heating,fireplace">
-            <div class="card-img"><img src="https://source.unsplash.com/600x400/?gas,heating,fireplace" alt="Cómo Ahorrar en la Factura del Gas en Invierno: Guía Práctica para Españoles" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
+        <a href="/blog/como-ahorrar-en-la-factura-del-gas-en-invierno-guia-practica-para-espanoles/" class="card" data-art="como-ahorrar-en-la-factura-del-gas-en-invierno-guia-practica-para-espanoles" data-titulo="Cómo Ahorrar en la Factura del Gas en Invierno: Guía Práctica para Españoles" data-fecha="2026-04-26">
+            
             <div class="card-body">
                 <div class="card-date">26 de abril de 2026</div>
                 <h2>Cómo Ahorrar en la Factura del Gas en Invierno: Guía Práctica para Españoles</h2>
                 <span class="card-link">Leer artículo →</span>
             </div>
         </a>
-<a href="/blog/discriminacion-horaria-guia-completa-para-ahorrar-en-tu-factura-de-electricidad/" class="card" data-art="discriminacion-horaria-guia-completa-para-ahorrar-en-tu-factura-de-electricidad" data-titulo="Discriminación Horaria: Guía Completa para Ahorrar en tu Factura de Electricidad" data-fecha="2026-04-26" data-img="https://source.unsplash.com/600x400/?clock,electricity,time">
-            <div class="card-img"><img src="https://source.unsplash.com/600x400/?clock,electricity,time" alt="Discriminación Horaria: Guía Completa para Ahorrar en tu Factura de Electricidad" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
+
+        <a href="/blog/discriminacion-horaria-guia-completa-para-ahorrar-en-tu-factura-de-electricidad/" class="card" data-art="discriminacion-horaria-guia-completa-para-ahorrar-en-tu-factura-de-electricidad" data-titulo="Discriminación Horaria: Guía Completa para Ahorrar en tu Factura de Electricidad" data-fecha="2026-04-26">
+            
             <div class="card-body">
                 <div class="card-date">26 de abril de 2026</div>
                 <h2>Discriminación Horaria: Guía Completa para Ahorrar en tu Factura de Electricidad</h2>
                 <span class="card-link">Leer artículo →</span>
             </div>
         </a>
-<a href="/blog/discriminacion-horaria-que-es-y-cuando-realmente-te-compensa/" class="card" data-art="discriminacion-horaria-que-es-y-cuando-realmente-te-compensa" data-titulo="Discriminación Horaria: Qué es y Cuándo Realmente te Compensa" data-fecha="2026-04-26" data-img="https://source.unsplash.com/600x400/?electricity,city,lights">
-            <div class="card-img"><img src="https://source.unsplash.com/600x400/?electricity,city,lights" alt="Discriminación Horaria: Qué es y Cuándo Realmente te Compensa" loading="lazy" onerror="this.parentElement.style.display='none'"></div>
+
+        <a href="/blog/discriminacion-horaria-que-es-y-cuando-realmente-te-compensa/" class="card" data-art="discriminacion-horaria-que-es-y-cuando-realmente-te-compensa" data-titulo="Discriminación Horaria: Qué es y Cuándo Realmente te Compensa" data-fecha="2026-04-26">
+            
             <div class="card-body">
                 <div class="card-date">26 de abril de 2026</div>
                 <h2>Discriminación Horaria: Qué es y Cuándo Realmente te Compensa</h2>
+                <span class="card-link">Leer artículo →</span>
+            </div>
+        </a>
+
+        <a href="/blog/como-leer-tu-factura-de-la-luz-paso-a-paso-guia-completa-para-el-consumidor-espanol/" class="card" data-art="como-leer-tu-factura-de-la-luz-paso-a-paso-guia-completa-para-el-consumidor-espanol" data-titulo="Cómo Leer tu Factura de la Luz Paso a Paso: Guía Completa para el Consumidor Español" data-fecha="2026-04-26">
+            <div class="card-img"><img src="/blog/como-leer-tu-factura-de-la-luz-paso-a-paso-guia-completa-para-el-consumidor-espanol/cover.jpg" alt="Cómo Leer tu Factura de la Luz Paso a Paso: Guía Completa para el Consumidor Español" loading="lazy"></div>
+            <div class="card-body">
+                <div class="card-date">26 de abril de 2026</div>
+                <h2>Cómo Leer tu Factura de la Luz Paso a Paso: Guía Completa para el Consumidor Español</h2>
                 <span class="card-link">Leer artículo →</span>
             </div>
         </a>
