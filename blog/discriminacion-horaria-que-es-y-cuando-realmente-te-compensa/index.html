@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discriminación Horaria: Qué es y Cuándo Realmente te Compensa | Blog Sí Ahorro</title>
+    <meta name="description" content="Artículo sobre qué son la discriminación horaria y cuándo compensa. Consejos prácticos de ahorro energético para reducir tu factura de luz y gas.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.si-ahorro.es/blog/discriminacion-horaria-que-es-y-cuando-realmente-te-compensa/">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Discriminación Horaria: Qué es y Cuándo Realmente te Compensa | Blog Sí Ahorro">
+    <meta property="og:url" content="https://www.si-ahorro.es/blog/discriminacion-horaria-que-es-y-cuando-realmente-te-compensa/">
+    <meta property="og:site_name" content="Sí Ahorro">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7GWD4QM2F"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-C7GWD4QM2F');</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --orange: #F97316; --orange-dk: #EA580C;
+            --bg: #171410; --bg2: #1f1a14;
+            --text: #FFFFFF; --t60: rgba(255,255,255,0.60); --t35: rgba(255,255,255,0.35);
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        nav { position: sticky; top: 0; z-index: 100; background: rgba(23,20,16,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+        .nav-logo { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
+        .nav-logo img { height: 32px; width: auto; }
+        .nav-logo span { font-weight: 700; font-size: 1.1rem; color: var(--text); }
+        .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+        .nav-links a { color: var(--t60); text-decoration: none; font-size: .9rem; font-weight: 500; transition: color .2s; }
+        .nav-links a:hover { color: var(--text); }
+        .nav-cta { background: var(--orange); color: #fff; border: none; border-radius: 8px; padding: .5rem 1.1rem; font-size: .88rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background .2s; }
+        .nav-cta:hover { background: var(--orange-dk); }
+
+        .art-hero { padding: 4rem 1.5rem 2rem; max-width: 760px; margin: 0 auto; }
+        .art-meta { font-size: .82rem; color: var(--t35); margin-bottom: 1rem; }
+        .art-hero h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.25; }
+
+        .art-img { max-width: 760px; margin: 1.5rem auto 0; padding: 0 1.5rem; position: relative; }
+        .art-img img { width: 100%; border-radius: 14px; display: block; max-height: 420px; object-fit: cover; }
+        .img-credit { font-size: .72rem; color: var(--t35); margin-top: .4rem; display: block; text-align: right; }
+        .img-credit a { color: var(--t35); text-decoration: none; }
+
+        article { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+        article h2 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 .8rem; color: var(--orange); }
+        article p { color: var(--t60); line-height: 1.8; margin-bottom: 1.2rem; }
+        article ul { padding-left: 1.4rem; margin-bottom: 1.2rem; }
+        article li { color: var(--t60); line-height: 1.8; margin-bottom: .4rem; }
+        article strong { color: var(--text); }
+
+        .art-cta { background: linear-gradient(135deg, #1f1a14, #2a2018); border: 1px solid rgba(249,115,22,0.3); border-radius: 16px; padding: 2.5rem 2rem; text-align: center; margin: 3rem 0; }
+        .art-cta h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: .7rem; }
+        .art-cta p { color: var(--t60); margin-bottom: 1.5rem; font-size: .95rem; }
+        .art-cta a { background: var(--orange); color: #fff; text-decoration: none; border-radius: 10px; padding: .75rem 2rem; font-weight: 700; font-size: 1rem; transition: background .2s; display: inline-block; }
+        .art-cta a:hover { background: var(--orange-dk); }
+
+        .back-link { display: inline-flex; align-items: center; gap: .4rem; color: var(--t60); text-decoration: none; font-size: .88rem; margin-bottom: 2rem; transition: color .2s; }
+        .back-link:hover { color: var(--text); }
+
+        footer { border-top: 1px solid rgba(255,255,255,0.06); padding: 2rem 1.5rem; text-align: center; color: var(--t35); font-size: .82rem; }
+        footer a { color: var(--t60); text-decoration: none; }
+
+        @media (max-width: 680px) {
+            .nav-links { display: none; }
+            .art-hero { padding: 2.5rem 1rem 1.5rem; }
+            .art-img { padding: 0 1rem; }
+            article { padding: 1.5rem 1rem 3rem; }
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/" class="nav-logo">
+        <img src="/logo/logo-transparent-png.png" alt="Sí Ahorro">
+        <span>Sí Ahorro</span>
+    </a>
+    <ul class="nav-links">
+        <li><a href="/#como-funciona">Cómo funciona</a></li>
+        <li><a href="/#tarifas">Tarifas</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/#contacto">Contacto</a></li>
+    </ul>
+    <a href="/#subir-factura" class="nav-cta">Analizar factura</a>
+</nav>
+
+<div class="art-hero">
+    <a href="/blog/" class="back-link">← Volver al blog</a>
+    <div class="art-meta">Publicado el 26 de abril de 2026 · Sí Ahorro</div>
+    <h1>Discriminación Horaria: Qué es y Cuándo Realmente te Compensa</h1>
+</div>
+
+<article>
+<p>Si recibís tu factura de luz y ves términos como "discriminación horaria" o "tarifa con discriminación", probablemente te hayas preguntado qué significa exactamente y si es una buena opción para tu hogar. La buena noticia es que entender este concepto puede ayudarte a ahorrar dinero de forma significativa en tu consumo eléctrico.</p>
+
+<h2>¿Qué es la Discriminación Horaria?</h2>
+
+<p>La discriminación horaria es un sistema de facturación eléctrica en el que el precio de la electricidad varía según la hora del día en que la consumes. En lugar de pagar una tarifa plana por kilovatio-hora (kWh) durante las 24 horas, con esta modalidad pagas precios diferentes en función de franjas horarias preestablecidas.</p>
+
+<p>Las distribuidoras españolas dividen el día en dos o tres períodos con costes distintos:</p>
+
+<ul>
+<li><strong>Período punta:</strong> las horas de mayor demanda, generalmente entre las 12:00 y las 22:00 horas (los precios más caros)</li>
+<li><strong>Período llano:</strong> horario intermedio con precios medios</li>
+<li><strong>Período valle:</strong> las horas de menor consumo, normalmente entre las 22:00 y las 12:00 horas (los precios más baratos)</li>
+</ul>
+
+<p>Esta estructura busca incentivar el desplazamiento del consumo hacia horas de menor demanda, beneficiando tanto a los consumidores como a la red eléctrica nacional.</p>
+
+<h2>Diferencia Entre Discriminación Horaria y Tarifa Plana</h2>
+
+<p>Con una <strong>tarifa plana</strong>, pagas el mismo precio por cada kWh independientemente de cuándo lo consumas. Es más simple, pero típicamente más cara si tu consumo se concentra en horas valle.</p>
+
+<p>Con <strong>discriminación horaria</strong>, el precio por kWh varía. Aunque pagas más en horas punta, puedes ahorrar considerablemente si trasladas tu consumo a horas valle, donde el precio puede ser hasta un 40-50% más barato.</p>
+
+<p>El ahorro real dependerá de tu capacidad para modificar tus hábitos de consumo. Si tu vida no te permite flexibilidad horaria, la tarifa plana podría ser mejor opción.</p>
+
+<h2>¿Cuándo Realmente Compensa Contratar Discriminación Horaria?</h2>
+
+<p>La discriminación horaria tiene sentido para ti en estas situaciones concretas:</p>
+
+<ul>
+<li><strong>Trabajas desde casa o tienes horario flexible:</strong> puedes lavar ropa, usar el horno o cargar dispositivos en horas valle</li>
+<li><strong>Tu consumo nocturno es elevado:</strong> si usas sistemas de climatización programada, calentadores de agua acumulador o piscina, aprovechas estos períodos baratos</li>
+<li><strong>Tienes coche eléctrico:</strong> cargarlo durante la noche (hora valle) supone un ahorro considerable comparado con horario punta</li>
+<li><strong>Vives en un hogar con personas jubiladas:</strong> que pueden realizar tareas domésticas en horas de bajo coste</li>
+<li><strong>Tu consumo anual es superior a 5.000 kWh:</strong> cuanto mayor sea tu consumo, más evidente es el ahorro potencial</li>
+</ul>
+
+<p><strong>No te compensa</strong> si vives solo en un piso pequeño, tu consumo es bajo y no puedes cambiar tus hábitos de uso de electrodomésticos.</p>
+
+<h2>Consejos Prácticos para Maximizar el Ahorro</h2>
+
+<p>Si decides contratar discriminación horaria, estos consejos te ayudarán a sacar el máximo partido:</p>
+
+<ul>
+<li><strong>Programa tus electrodomésticos:</strong> casi todas las lavadoras y lavavajillas modernas permiten diferir el inicio del ciclo. Úsalo para horas valle</li>
+<li><strong>Carga dispositivos de noche:</strong> móviles, tablets y portátiles en período valle, especialmente si tienes coche eléctrico</li>
+<li><strong>Ajusta la climatización:</strong> si tienes aire acondicionado o calefacción, baja la intensidad en horas punta y aumenta en valle (siempre priorizando tu confort)</li>
+<li><strong>Cocina inteligentemente:</strong> utiliza el horno preferiblemente fuera de las 12:00-22:00 horas</li>
+<li><strong>Monitoriza tu consumo:</strong> muchos comercializadores ofrecen aplicaciones para ver tu consumo en tiempo real por franja horaria</li>
+</ul>
+
+<h2>Cómo Elegir la Mejor Opción: Compara Tarifas</h2>
+
+<p>La decisión entre discriminación horaria y tarifa plana depende de tu perfil específico. Para saber cuál te conviene más, necesitas comparar ofertas reales basándote en tu consumo actual.</p>
+
+<p><strong>Sí Ahorro</strong> puede ayudarte a comparar de forma rápida y gratuita todas las tarifas disponibles en el mercado español, mostrándote exactamente cuánto ahorrarías con cada opción según tu patrón de consumo real. Solo necesitas proporcionar tu último recibo de luz para obtener comparativas personalizadas.</p>
+
+<p>Accede a la comparativa, revisa las opciones con y sin discriminación horaria, y toma una decisión informada. Cambiar de tarifa es sencillo y puede suponer ahorros de cientos de euros anuales.</p>
+
+<h2>Conclusión: Una Decisión Personalizada</h2>
+
+<p>La discriminación horaria no es la mejor opción para todos, pero puede ser muy rentable para hogares con consumo flexible. Analiza tu situación, calcula tu potencial de ahorro real y elige la tarifa que mejor se adapte a tu estilo de vida. Tu factura de la luz te lo agradecerá.</p>
+
+    <div class="art-cta">
+        <h3>¿Quieres saber cuánto puedes ahorrar?</h3>
+        <p>Sube tu factura y nuestra IA calcula en segundos las mejores tarifas para ti.</p>
+        <a href="/#subir-factura">Analizar mi factura gratis</a>
+    </div>
+</article>
+
+<footer>
+    <p>© 2026 Sí Ahorro · <a href="/blog/">Blog</a> · <a href="/#contacto">Contacto</a></p>
+</footer>
+</body>
+</html>
