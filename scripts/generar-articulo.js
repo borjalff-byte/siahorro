@@ -33,27 +33,37 @@ function fechaLegible(iso) {
     return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-// IDs de fotos fijas de Unsplash por tema (no requieren API key ni redirect)
-const UNSPLASH_PHOTO_IDS = [
-    'tUIsCWx_k00',  // electricity bill home
-    'xmZ5tkZKwyc',  // power electricity
-    '1zO4O3Z0UJA',  // energy price / money saving
-    'ARHucL89bKg',  // gas heating winter / fireplace
-    'wLeHuhh2D8M',  // clock time
-    'ftAVIslKM6Q',  // city electricity
-    '178j8tJrNlc',  // home house
-    'WtxE9xb0vQU',  // kitchen appliances
-    'Hh18POSx5qk',  // family home
-    'omfN1pW-n2Y',  // solar panels roof
-    'QI6NLgN5XnM',  // contract signing
-    'PWxMg0Dwkks',  // boiler gas pipes
+const UNSPLASH_QUERIES = [
+    'electricity bill home',
+    'electric power energy',
+    'money saving piggy bank',
+    'gas heating fireplace winter',
+    'clock time schedule',
+    'city lights energy',
+    'house home exterior',
+    'kitchen appliances',
+    'family living room',
+    'solar panels roof',
+    'contract signing pen',
+    'boiler pipes heating',
 ];
 
 async function obtenerImagen(idx) {
-    const photoId = UNSPLASH_PHOTO_IDS[idx % UNSPLASH_PHOTO_IDS.length];
-    const url = `https://images.unsplash.com/photo-${photoId}?w=1200&q=80&auto=format&fit=crop`;
-    console.log(`Imagen: ${url}`);
-    return url;
+    const accessKey = process.env.UNSPLASH_ACCESS_KEY;
+    if (!accessKey) { console.log('Sin UNSPLASH_ACCESS_KEY, omitiendo imagen'); return null; }
+    const query = encodeURIComponent(UNSPLASH_QUERIES[idx % UNSPLASH_QUERIES.length]);
+    const apiUrl = `https://api.unsplash.com/photos/random?query=${query}&orientation=landscape&client_id=${accessKey}`;
+    try {
+        const res = await fetch(apiUrl);
+        if (!res.ok) { console.log(`Unsplash error ${res.status}`); return null; }
+        const data = await res.json();
+        const url = data.urls?.regular || null;
+        console.log(`Imagen obtenida: ${url}`);
+        return url;
+    } catch (e) {
+        console.log(`Error obteniendo imagen: ${e.message}`);
+        return null;
+    }
 }
 
 async function generarArticulo(tema, temaIdx) {
