@@ -1,8 +1,6 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
-
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const TEMAS = [
@@ -20,20 +18,6 @@ const TEMAS = [
     'cómo negociar tu tarifa de gas con la comercializadora',
 ];
 
-const UNSPLASH_KEYWORDS = [
-    'electricity,bill,home',
-    'electricity,power,home',
-    'energy,electricity,price',
-    'gas,heating,home,winter',
-    'clock,electricity,home',
-    'electricity,price,city',
-    'electricity,change,home',
-    'appliances,kitchen,home',
-    'family,home,electricity',
-    'solar,panels,roof,home',
-    'contract,home,electricity',
-    'gas,boiler,home',
-];
 
 function slugify(str) {
     return str
@@ -49,29 +33,30 @@ function fechaLegible(iso) {
     return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-function fetchFinalUrl(url) {
-    return new Promise((resolve) => {
-        https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (res) => {
-            if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-                const loc = res.headers.location.split('?')[0];
-                resolve(loc + '?w=1200&q=80&auto=format&fit=crop');
-            } else {
-                resolve(null);
-            }
-            res.destroy();
-        }).on('error', () => resolve(null));
-    });
-}
+// IDs de fotos fijas de Unsplash por tema (no requieren API key ni redirect)
+const UNSPLASH_PHOTO_IDS = [
+    'XbwHrt87mQ0',  // electricity bill home
+    'Q0-fOL2nqZc',  // power electricity
+    'p0j-mE6mGo4',  // energy price
+    'oQD9uq4Rd4I',  // gas heating winter
+    'GkinCd2enIY',  // clock time
+    'kGSapVhzNDE',  // city electricity
+    'e9F1PElIm7A',  // home change
+    'K_Na5gCmh38',  // kitchen appliances
+    'bzdhc5b3Bxs',  // family home
+    'L0xOtROBERU',  // solar panels
+    'nGrfKmtwv24',  // contract
+    'oV3zTK7vuP0',  // boiler gas
+];
 
-async function obtenerImagen(keywords) {
-    console.log(`Buscando imagen: ${keywords}`);
-    const url = await fetchFinalUrl(`https://source.unsplash.com/1200x600/?${keywords}`);
-    if (url) console.log(`Imagen obtenida: ${url}`);
-    else console.log('No se pudo obtener imagen, continuando sin ella');
+async function obtenerImagen(idx) {
+    const photoId = UNSPLASH_PHOTO_IDS[idx % UNSPLASH_PHOTO_IDS.length];
+    const url = `https://images.unsplash.com/photo-${photoId}?w=1200&q=80&auto=format&fit=crop`;
+    console.log(`Imagen: ${url}`);
     return url;
 }
 
-async function generarArticulo(tema, keywords) {
+async function generarArticulo(tema, temaIdx) {
     console.log(`Generando artículo sobre: ${tema}`);
 
     const [msg, imgUrl] = await Promise.all([
@@ -93,10 +78,14 @@ El artículo debe:
 Devuelve SOLO el contenido en HTML semántico usando estas etiquetas: h1, h2, p, ul, li, strong. Sin DOCTYPE, sin html/head/body, sin estilos inline. Solo el contenido del artículo.`
             }]
         }),
-        obtenerImagen(keywords)
+        obtenerImagen(temaIdx)
     ]);
 
-    const contenidoHtml = msg.content[0].text.trim();
+    const contenidoHtml = msg.content[0].text
+        .trim()
+        .replace(/^```html\s*/i, '')
+        .replace(/```\s*$/, '')
+        .trim();
 
     const tituloMatch = contenidoHtml.match(/<h1[^>]*>(.*?)<\/h1>/i);
     const titulo = tituloMatch ? tituloMatch[1].replace(/<[^>]+>/g, '') : tema;
@@ -365,10 +354,9 @@ async function main() {
     }
 
     const tema = TEMAS[idx];
-    const keywords = UNSPLASH_KEYWORDS[idx];
     console.log(`Tema seleccionado: ${tema}`);
 
-    const articulo = await generarArticulo(tema, keywords);
+    const articulo = await generarArticulo(tema, idx);
     actualizarIndice([articulo]);
 
     console.log('Listo.');
