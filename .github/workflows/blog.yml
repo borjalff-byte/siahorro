@@ -29,6 +29,7 @@ jobs:
       - name: Generar artículo con Claude
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
         run: node scripts/generar-articulo.js
 
       - name: Commit y push del nuevo artículo

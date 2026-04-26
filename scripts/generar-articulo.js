@@ -7,18 +7,18 @@ const BLOG_DIR = path.join(__dirname, '..', 'blog');
 const PUBLICADOS_PATH = path.join(BLOG_DIR, 'publicados.json');
 
 const TEMAS = [
-    { tema: 'cómo leer tu factura de la luz paso a paso',               img: 'electricity,bill,home' },
-    { tema: 'qué es la potencia contratada y cómo elegir la correcta',  img: 'electricity,power,home' },
-    { tema: 'diferencias entre tarifa regulada PVPC y tarifa fija',     img: 'energy,price,money' },
-    { tema: 'cómo ahorrar en la factura del gas en invierno',           img: 'gas,heating,fireplace' },
-    { tema: 'qué son la discriminación horaria y cuándo compensa',      img: 'clock,electricity,time' },
-    { tema: 'por qué sube la luz en España y cómo protegerte',          img: 'electricity,city,lights' },
-    { tema: 'guía para cambiar de comercializadora de luz sin cortes',  img: 'house,home,energy' },
-    { tema: 'cómo calcular el consumo real de tus electrodomésticos',   img: 'kitchen,appliances,home' },
-    { tema: 'qué es el bono social eléctrico y quién puede pedirlo',    img: 'family,home,help' },
-    { tema: 'autoconsumo solar: cuánto se ahorra realmente',            img: 'solar,panels,roof' },
-    { tema: 'errores comunes al contratar una tarifa de luz',           img: 'contract,signing,pen' },
-    { tema: 'cómo negociar tu tarifa de gas con la comercializadora',   img: 'gas,boiler,pipes' },
+    { tema: 'cómo leer tu factura de la luz paso a paso',               img: 'electricity bill home' },
+    { tema: 'qué es la potencia contratada y cómo elegir la correcta',  img: 'electric power meter home' },
+    { tema: 'diferencias entre tarifa regulada PVPC y tarifa fija',     img: 'energy saving money' },
+    { tema: 'cómo ahorrar en la factura del gas en invierno',           img: 'gas heating fireplace winter' },
+    { tema: 'qué son la discriminación horaria y cuándo compensa',      img: 'clock electricity time' },
+    { tema: 'por qué sube la luz en España y cómo protegerte',          img: 'electricity city night' },
+    { tema: 'guía para cambiar de comercializadora de luz sin cortes',  img: 'house home energy' },
+    { tema: 'cómo calcular el consumo real de tus electrodomésticos',   img: 'kitchen appliances modern' },
+    { tema: 'qué es el bono social eléctrico y quién puede pedirlo',    img: 'family home help' },
+    { tema: 'autoconsumo solar: cuánto se ahorra realmente',            img: 'solar panels roof' },
+    { tema: 'errores comunes al contratar una tarifa de luz',           img: 'contract signing document' },
+    { tema: 'cómo negociar tu tarifa de gas con la comercializadora',   img: 'gas boiler pipes' },
 ];
 
 function slugify(str) {
@@ -32,9 +32,7 @@ function fechaLegible(iso) {
 }
 
 function cargarPublicados() {
-    if (fs.existsSync(PUBLICADOS_PATH)) {
-        return JSON.parse(fs.readFileSync(PUBLICADOS_PATH, 'utf8'));
-    }
+    if (fs.existsSync(PUBLICADOS_PATH)) return JSON.parse(fs.readFileSync(PUBLICADOS_PATH, 'utf8'));
     return [];
 }
 
@@ -42,8 +40,40 @@ function guardarPublicados(lista) {
     fs.writeFileSync(PUBLICADOS_PATH, JSON.stringify(lista, null, 2), 'utf8');
 }
 
+async function descargarImagen(url, destPath) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const buffer = Buffer.from(await res.arrayBuffer());
+    fs.writeFileSync(destPath, buffer);
+}
+
+async function obtenerYGuardarImagen(keywords, artDir) {
+    const apiKey = process.env.PEXELS_API_KEY;
+    if (!apiKey) { console.log('Sin PEXELS_API_KEY — sin imagen'); return false; }
+
+    try {
+        const res = await fetch(
+            `https://api.pexels.com/v1/search?query=${encodeURIComponent(keywords)}&orientation=landscape&per_page=5`,
+            { headers: { Authorization: apiKey } }
+        );
+        if (!res.ok) { console.log(`Pexels error ${res.status}`); return false; }
+
+        const data = await res.json();
+        if (!data.photos?.length) { console.log('Pexels sin resultados'); return false; }
+
+        const photo = data.photos[0];
+        const imgUrl = photo.src.large2x || photo.src.large;
+        await descargarImagen(imgUrl, path.join(artDir, 'cover.jpg'));
+        console.log(`Imagen guardada: cover.jpg (${photo.photographer})`);
+        return true;
+    } catch (e) {
+        console.log(`Error imagen: ${e.message}`);
+        return false;
+    }
+}
+
 async function generarArticulo(tema, imgKeywords) {
-    console.log(`Generando artículo: ${tema}`);
+    console.log(`Generando: ${tema}`);
 
     const msg = await client.messages.create({
         model: 'claude-haiku-4-5-20251001',
@@ -60,7 +90,7 @@ El artículo debe:
 - Ser práctico, con consejos concretos y accionables
 - Mencionar naturalmente que Sí Ahorro puede ayudar al lector a comparar tarifas
 
-Devuelve SOLO el contenido en HTML semántico: h1, h2, p, ul, li, strong. Sin DOCTYPE, sin html/head/body, sin estilos inline, sin bloques de código.`
+Devuelve SOLO el contenido en HTML semántico: h1, h2, p, ul, li, strong. Sin DOCTYPE, sin html/head/body, sin estilos inline, sin bloques de código markdown.`
         }]
     });
 
@@ -75,15 +105,16 @@ Devuelve SOLO el contenido en HTML semántico: h1, h2, p, ul, li, strong. Sin DO
     const fecha = new Date().toISOString().split('T')[0];
     const fechaTexto = fechaLegible(fecha);
 
-    // Imagen: URL directa de Unsplash source (el navegador sigue el redirect)
-    const imgSrc = `https://source.unsplash.com/1200x600/?${encodeURIComponent(imgKeywords)}`;
-    const thumbSrc = `https://source.unsplash.com/600x400/?${encodeURIComponent(imgKeywords)}`;
+    const artDir = path.join(BLOG_DIR, slug);
+    fs.mkdirSync(artDir, { recursive: true });
 
-    const imgHtml = `
+    const tieneImagen = await obtenerYGuardarImagen(imgKeywords, artDir);
+
+    const imgHtml = tieneImagen ? `
 <div class="art-img">
-    <img src="${imgSrc}" alt="${titulo}" loading="lazy" onerror="this.parentElement.style.display='none'">
-    <span class="img-credit">Foto: <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></span>
-</div>`;
+    <img src="cover.jpg" alt="${titulo}" loading="lazy">
+    <span class="img-credit">Foto: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></span>
+</div>` : '';
 
     const html = `<!DOCTYPE html>
 <html lang="es">
@@ -97,7 +128,7 @@ Devuelve SOLO el contenido en HTML semántico: h1, h2, p, ul, li, strong. Sin DO
     <meta property="og:type" content="article">
     <meta property="og:title" content="${titulo} | Blog Sí Ahorro">
     <meta property="og:url" content="https://www.si-ahorro.es/blog/${slug}/">
-    <meta property="og:site_name" content="Sí Ahorro">
+    <meta property="og:site_name" content="Sí Ahorro">${tieneImagen ? `\n    <meta property="og:image" content="https://www.si-ahorro.es/blog/${slug}/cover.jpg">` : ''}
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7GWD4QM2F"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-C7GWD4QM2F');</script>
@@ -174,32 +205,26 @@ ${contenidoHtml.replace(/<h1[^>]*>.*?<\/h1>/is, '').trim()}
 </body>
 </html>`;
 
-    const dir = path.join(BLOG_DIR, slug);
-    fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(path.join(dir, 'index.html'), html, 'utf8');
+    fs.writeFileSync(path.join(artDir, 'index.html'), html, 'utf8');
     console.log(`Guardado: blog/${slug}/`);
-
-    return { slug, titulo, fecha, thumbSrc };
+    return { slug, titulo, fecha, tieneImagen };
 }
 
 function reconstruirIndice() {
-    // Lee SOLO las carpetas que realmente existen en blog/
-    const carpetas = fs.readdirSync(BLOG_DIR).filter(f =>
-        fs.statSync(path.join(BLOG_DIR, f)).isDirectory()
-    );
-
     const publicados = cargarPublicados();
-    const articulos = carpetas
-        .map(slug => publicados.find(p => p.slug === slug))
-        .filter(Boolean)
+    const carpetas = new Set(
+        fs.readdirSync(BLOG_DIR).filter(f => fs.statSync(path.join(BLOG_DIR, f)).isDirectory())
+    );
+    const articulos = publicados
+        .filter(p => carpetas.has(p.slug))
         .sort((a, b) => b.fecha.localeCompare(a.fecha));
 
     const cards = articulos.map(art => {
-        const imgThumb = art.thumbSrc
-            ? `<div class="card-img"><img src="${art.thumbSrc}" alt="${art.titulo}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`
+        const imgThumb = art.tieneImagen
+            ? `<div class="card-img"><img src="/blog/${art.slug}/cover.jpg" alt="${art.titulo}" loading="lazy"></div>`
             : '';
         return `
-        <a href="/blog/${art.slug}/" class="card" data-art="${art.slug}" data-titulo="${art.titulo}" data-fecha="${art.fecha}" data-img="${art.thumbSrc || ''}">
+        <a href="/blog/${art.slug}/" class="card" data-art="${art.slug}" data-titulo="${art.titulo}" data-fecha="${art.fecha}">
             ${imgThumb}
             <div class="card-body">
                 <div class="card-date">${fechaLegible(art.fecha)}</div>
@@ -279,23 +304,18 @@ ${articulos.length > 0 ? `<div class="grid">${cards}\n</div>` : '<div style="max
 </html>`;
 
     fs.writeFileSync(path.join(BLOG_DIR, 'index.html'), html, 'utf8');
-    console.log(`Índice reconstruido con ${articulos.length} artículo(s)`);
+    console.log(`Índice: ${articulos.length} artículo(s)`);
 }
 
 async function main() {
     const publicados = cargarPublicados();
     const temasPublicados = new Set(publicados.map(p => p.tema));
-
-    // Elegir el primer tema no publicado aún
     const entrada = TEMAS.find(t => !temasPublicados.has(t.tema));
-    if (!entrada) { console.log('Todos los temas ya publicados.'); return; }
+    if (!entrada) { console.log('Todos los temas publicados.'); return; }
 
     const articulo = await generarArticulo(entrada.tema, entrada.img);
-
-    // Registrar en publicados.json
     publicados.push({ tema: entrada.tema, ...articulo });
     guardarPublicados(publicados);
-
     reconstruirIndice();
     console.log('Listo.');
 }
