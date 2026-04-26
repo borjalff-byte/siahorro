@@ -35,18 +35,18 @@ function fechaLegible(iso) {
 
 // IDs de fotos fijas de Unsplash por tema (no requieren API key ni redirect)
 const UNSPLASH_PHOTO_IDS = [
-    'XbwHrt87mQ0',  // electricity bill home
-    'Q0-fOL2nqZc',  // power electricity
-    'p0j-mE6mGo4',  // energy price
-    'oQD9uq4Rd4I',  // gas heating winter
-    'GkinCd2enIY',  // clock time
-    'kGSapVhzNDE',  // city electricity
-    'e9F1PElIm7A',  // home change
-    'K_Na5gCmh38',  // kitchen appliances
-    'bzdhc5b3Bxs',  // family home
-    'L0xOtROBERU',  // solar panels
-    'nGrfKmtwv24',  // contract
-    'oV3zTK7vuP0',  // boiler gas
+    'tUIsCWx_k00',  // electricity bill home
+    'xmZ5tkZKwyc',  // power electricity
+    '1zO4O3Z0UJA',  // energy price / money saving
+    'ARHucL89bKg',  // gas heating winter / fireplace
+    'wLeHuhh2D8M',  // clock time
+    'ftAVIslKM6Q',  // city electricity
+    '178j8tJrNlc',  // home house
+    'WtxE9xb0vQU',  // kitchen appliances
+    'Hh18POSx5qk',  // family home
+    'omfN1pW-n2Y',  // solar panels roof
+    'QI6NLgN5XnM',  // contract signing
+    'PWxMg0Dwkks',  // boiler gas pipes
 ];
 
 async function obtenerImagen(idx) {
@@ -95,7 +95,7 @@ Devuelve SOLO el contenido en HTML semántico usando estas etiquetas: h1, h2, p,
 
     const imgHtml = imgUrl ? `
 <div class="art-img">
-    <img src="${imgUrl}" alt="${titulo}" loading="lazy">
+    <img src="${imgUrl}" alt="${titulo}" loading="lazy" onerror="this.parentElement.style.display='none'">
     <span class="img-credit">Foto: <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></span>
 </div>` : '';
 
@@ -237,7 +237,7 @@ function actualizarIndice(articulos) {
 
     const cards = existing.map(art => {
         const imgThumb = art.imgUrl
-            ? `<div class="card-img"><img src="${art.imgUrl.replace('w=1200', 'w=600')}" alt="${art.titulo}" loading="lazy"></div>`
+            ? `<div class="card-img"><img src="${art.imgUrl.replace('w=1200', 'w=600')}" alt="${art.titulo}" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`
             : '';
         return `
         <a href="/blog/${art.slug}/" class="card" data-art="${art.slug}" data-titulo="${art.titulo}" data-fecha="${art.fecha}" data-img="${art.imgUrl || ''}">
