@@ -1,6 +1,7 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -9,7 +10,7 @@ const TEMAS = [
     'qué es la potencia contratada y cómo elegir la correcta',
     'diferencias entre tarifa regulada PVPC y tarifa fija',
     'cómo ahorrar en la factura del gas en invierno',
-    'qué son los discriminación horaria y cuándo compensa',
+    'qué son la discriminación horaria y cuándo compensa',
     'por qué sube la luz en España y cómo protegerte',
     'guía para cambiar de comercializadora de luz sin cortes',
     'cómo calcular el consumo real de tus electrodomésticos',
@@ -17,6 +18,21 @@ const TEMAS = [
     'autoconsumo solar: cuánto se ahorra realmente',
     'errores comunes al contratar una tarifa de luz',
     'cómo negociar tu tarifa de gas con la comercializadora',
+];
+
+const UNSPLASH_KEYWORDS = [
+    'electricity,bill,home',
+    'electricity,power,home',
+    'energy,electricity,price',
+    'gas,heating,home,winter',
+    'clock,electricity,home',
+    'electricity,price,city',
+    'electricity,change,home',
+    'appliances,kitchen,home',
+    'family,home,electricity',
+    'solar,panels,roof,home',
+    'contract,home,electricity',
+    'gas,boiler,home',
 ];
 
 function slugify(str) {
@@ -33,15 +49,38 @@ function fechaLegible(iso) {
     return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-async function generarArticulo(tema) {
+function fetchFinalUrl(url) {
+    return new Promise((resolve) => {
+        https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (res) => {
+            if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+                const loc = res.headers.location.split('?')[0];
+                resolve(loc + '?w=1200&q=80&auto=format&fit=crop');
+            } else {
+                resolve(null);
+            }
+            res.destroy();
+        }).on('error', () => resolve(null));
+    });
+}
+
+async function obtenerImagen(keywords) {
+    console.log(`Buscando imagen: ${keywords}`);
+    const url = await fetchFinalUrl(`https://source.unsplash.com/1200x600/?${keywords}`);
+    if (url) console.log(`Imagen obtenida: ${url}`);
+    else console.log('No se pudo obtener imagen, continuando sin ella');
+    return url;
+}
+
+async function generarArticulo(tema, keywords) {
     console.log(`Generando artículo sobre: ${tema}`);
 
-    const msg = await client.messages.create({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2048,
-        messages: [{
-            role: 'user',
-            content: `Eres un experto en ahorro energético en España. Escribe un artículo de blog completo y útil sobre: "${tema}".
+    const [msg, imgUrl] = await Promise.all([
+        client.messages.create({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 2048,
+            messages: [{
+                role: 'user',
+                content: `Eres un experto en ahorro energético en España. Escribe un artículo de blog completo y útil sobre: "${tema}".
 
 El artículo debe:
 - Tener un título atractivo (H1)
@@ -52,17 +91,24 @@ El artículo debe:
 - Mencionar naturalmente que Sí Ahorro puede ayudar al lector a comparar tarifas
 
 Devuelve SOLO el contenido en HTML semántico usando estas etiquetas: h1, h2, p, ul, li, strong. Sin DOCTYPE, sin html/head/body, sin estilos inline. Solo el contenido del artículo.`
-        }]
-    });
+            }]
+        }),
+        obtenerImagen(keywords)
+    ]);
 
     const contenidoHtml = msg.content[0].text.trim();
 
-    // Extraer título del H1
     const tituloMatch = contenidoHtml.match(/<h1[^>]*>(.*?)<\/h1>/i);
     const titulo = tituloMatch ? tituloMatch[1].replace(/<[^>]+>/g, '') : tema;
     const slug = slugify(titulo);
     const fecha = new Date().toISOString().split('T')[0];
     const fechaTexto = fechaLegible(fecha);
+
+    const imgHtml = imgUrl ? `
+<div class="art-img">
+    <img src="${imgUrl}" alt="${titulo}" loading="lazy">
+    <span class="img-credit">Foto: <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></span>
+</div>` : '';
 
     const html = `<!DOCTYPE html>
 <html lang="es">
@@ -76,7 +122,7 @@ Devuelve SOLO el contenido en HTML semántico usando estas etiquetas: h1, h2, p,
     <meta property="og:type" content="article">
     <meta property="og:title" content="${titulo} | Blog Sí Ahorro">
     <meta property="og:url" content="https://www.si-ahorro.es/blog/${slug}/">
-    <meta property="og:site_name" content="Sí Ahorro">
+    <meta property="og:site_name" content="Sí Ahorro">${imgUrl ? `\n    <meta property="og:image" content="${imgUrl}">` : ''}
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7GWD4QM2F"></script>
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-C7GWD4QM2F');</script>
@@ -88,7 +134,6 @@ Devuelve SOLO el contenido en HTML semántico usando estas etiquetas: h1, h2, p,
         :root {
             --orange: #F97316; --orange-dk: #EA580C;
             --bg: #171410; --bg2: #1f1a14;
-            --glass: rgba(255,255,255,0.05);
             --text: #FFFFFF; --t60: rgba(255,255,255,0.60); --t35: rgba(255,255,255,0.35);
         }
         html { scroll-behavior: smooth; }
@@ -104,12 +149,16 @@ Devuelve SOLO el contenido en HTML semántico usando estas etiquetas: h1, h2, p,
         .nav-cta { background: var(--orange); color: #fff; border: none; border-radius: 8px; padding: .5rem 1.1rem; font-size: .88rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background .2s; }
         .nav-cta:hover { background: var(--orange-dk); }
 
-        .art-hero { padding: 4rem 1.5rem 2.5rem; max-width: 760px; margin: 0 auto; }
+        .art-hero { padding: 4rem 1.5rem 2rem; max-width: 760px; margin: 0 auto; }
         .art-meta { font-size: .82rem; color: var(--t35); margin-bottom: 1rem; }
-        .art-hero h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.25; margin-bottom: 1rem; }
-        .art-hero .lead { font-size: 1.1rem; color: var(--t60); line-height: 1.7; }
+        .art-hero h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.25; }
 
-        article { max-width: 760px; margin: 0 auto; padding: 0 1.5rem 5rem; }
+        .art-img { max-width: 760px; margin: 1.5rem auto 0; padding: 0 1.5rem; position: relative; }
+        .art-img img { width: 100%; border-radius: 14px; display: block; max-height: 420px; object-fit: cover; }
+        .img-credit { font-size: .72rem; color: var(--t35); margin-top: .4rem; display: block; text-align: right; }
+        .img-credit a { color: var(--t35); text-decoration: none; }
+
+        article { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
         article h2 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 .8rem; color: var(--orange); }
         article p { color: var(--t60); line-height: 1.8; margin-bottom: 1.2rem; }
         article ul { padding-left: 1.4rem; margin-bottom: 1.2rem; }
@@ -131,7 +180,8 @@ Devuelve SOLO el contenido en HTML semántico usando estas etiquetas: h1, h2, p,
         @media (max-width: 680px) {
             .nav-links { display: none; }
             .art-hero { padding: 2.5rem 1rem 1.5rem; }
-            article { padding: 0 1rem 3rem; }
+            .art-img { padding: 0 1rem; }
+            article { padding: 1.5rem 1rem 3rem; }
         }
     </style>
 </head>
@@ -155,7 +205,7 @@ Devuelve SOLO el contenido en HTML semántico usando estas etiquetas: h1, h2, p,
     <div class="art-meta">Publicado el ${fechaTexto} · Sí Ahorro</div>
     ${contenidoHtml.match(/<h1[^>]*>.*?<\/h1>/is)?.[0] ?? `<h1>${titulo}</h1>`}
 </div>
-
+${imgHtml}
 <article>
 ${contenidoHtml.replace(/<h1[^>]*>.*?<\/h1>/is, '').trim()}
 
@@ -172,13 +222,12 @@ ${contenidoHtml.replace(/<h1[^>]*>.*?<\/h1>/is, '').trim()}
 </body>
 </html>`;
 
-    // Guardar artículo
     const dir = path.join(__dirname, '..', 'blog', slug);
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, 'index.html'), html, 'utf8');
 
     console.log(`Artículo guardado en blog/${slug}/index.html`);
-    return { slug, titulo, fecha };
+    return { slug, titulo, fecha, imgUrl };
 }
 
 function actualizarIndice(articulos) {
@@ -187,23 +236,30 @@ function actualizarIndice(articulos) {
 
     if (fs.existsSync(indexPath)) {
         const content = fs.readFileSync(indexPath, 'utf8');
-        const matches = [...content.matchAll(/data-art="([^"]+)"\s+data-titulo="([^"]+)"\s+data-fecha="([^"]+)"/g)];
-        existing = matches.map(m => ({ slug: m[1], titulo: m[2], fecha: m[3] }));
+        const matches = [...content.matchAll(/data-art="([^"]+)"\s+data-titulo="([^"]+)"\s+data-fecha="([^"]+)"\s+data-img="([^"]*)"/g)];
+        existing = matches.map(m => ({ slug: m[1], titulo: m[2], fecha: m[3], imgUrl: m[4] || null }));
     }
 
-    // Añadir nuevos sin duplicar
     for (const art of articulos) {
         if (!existing.find(e => e.slug === art.slug)) {
             existing.unshift(art);
         }
     }
 
-    const cards = existing.map(art => `
-        <a href="/blog/${art.slug}/" class="card" data-art="${art.slug}" data-titulo="${art.titulo}" data-fecha="${art.fecha}">
-            <div class="card-date">${fechaLegible(art.fecha)}</div>
-            <h2>${art.titulo}</h2>
-            <span class="card-link">Leer artículo →</span>
-        </a>`).join('\n');
+    const cards = existing.map(art => {
+        const imgThumb = art.imgUrl
+            ? `<div class="card-img"><img src="${art.imgUrl.replace('w=1200', 'w=600')}" alt="${art.titulo}" loading="lazy"></div>`
+            : '';
+        return `
+        <a href="/blog/${art.slug}/" class="card" data-art="${art.slug}" data-titulo="${art.titulo}" data-fecha="${art.fecha}" data-img="${art.imgUrl || ''}">
+            ${imgThumb}
+            <div class="card-body">
+                <div class="card-date">${fechaLegible(art.fecha)}</div>
+                <h2>${art.titulo}</h2>
+                <span class="card-link">Leer artículo →</span>
+            </div>
+        </a>`;
+    }).join('\n');
 
     const html = `<!DOCTYPE html>
 <html lang="es">
@@ -241,8 +297,12 @@ function actualizarIndice(articulos) {
         .hero p { color: var(--t60); font-size: 1.05rem; line-height: 1.7; }
 
         .grid { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-        .card { background: #1f1a14; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.8rem; text-decoration: none; color: var(--text); transition: border-color .2s, transform .2s; display: flex; flex-direction: column; gap: .6rem; }
+        .card { background: #1f1a14; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; overflow: hidden; text-decoration: none; color: var(--text); transition: border-color .2s, transform .2s; display: flex; flex-direction: column; }
         .card:hover { border-color: var(--orange); transform: translateY(-3px); }
+        .card-img { width: 100%; height: 160px; overflow: hidden; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
+        .card:hover .card-img img { transform: scale(1.04); }
+        .card-body { padding: 1.4rem; display: flex; flex-direction: column; gap: .5rem; flex: 1; }
         .card-date { font-size: .78rem; color: var(--t35); }
         .card h2 { font-size: 1rem; font-weight: 600; line-height: 1.45; flex: 1; }
         .card-link { font-size: .85rem; color: var(--orange); font-weight: 600; margin-top: .4rem; }
@@ -288,11 +348,12 @@ ${existing.length > 0 ? `<div class="grid">${cards}\n</div>` : '<div class="empt
 }
 
 async function main() {
-    // Elegir tema rotando según el mes
     const mes = new Date().getMonth();
-    const tema = TEMAS[mes % TEMAS.length];
+    const idx = mes % TEMAS.length;
+    const tema = TEMAS[idx];
+    const keywords = UNSPLASH_KEYWORDS[idx];
 
-    const articulo = await generarArticulo(tema);
+    const articulo = await generarArticulo(tema, keywords);
     actualizarIndice([articulo]);
 
     console.log('Listo.');
