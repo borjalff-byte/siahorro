@@ -34,8 +34,12 @@
         .hero p { color: var(--t60); font-size: 1.05rem; line-height: 1.7; }
 
         .grid { max-width: 900px; margin: 0 auto; padding: 0 1.5rem 5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-        .card { background: #1f1a14; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.8rem; text-decoration: none; color: var(--text); transition: border-color .2s, transform .2s; display: flex; flex-direction: column; gap: .6rem; }
+        .card { background: #1f1a14; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; overflow: hidden; text-decoration: none; color: var(--text); transition: border-color .2s, transform .2s; display: flex; flex-direction: column; }
         .card:hover { border-color: var(--orange); transform: translateY(-3px); }
+        .card-img { width: 100%; height: 160px; overflow: hidden; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
+        .card:hover .card-img img { transform: scale(1.04); }
+        .card-body { padding: 1.4rem; display: flex; flex-direction: column; gap: .5rem; flex: 1; }
         .card-date { font-size: .78rem; color: var(--t35); }
         .card h2 { font-size: 1rem; font-weight: 600; line-height: 1.45; flex: 1; }
         .card-link { font-size: .85rem; color: var(--orange); font-weight: 600; margin-top: .4rem; }
@@ -69,10 +73,13 @@
 </div>
 
 <div class="grid">
-        <a href="/blog/como-ahorrar-en-la-factura-del-gas-en-invierno-guia-practica-para-hogares-espanoles/" class="card" data-art="como-ahorrar-en-la-factura-del-gas-en-invierno-guia-practica-para-hogares-espanoles" data-titulo="Cómo Ahorrar en la Factura del Gas en Invierno: Guía Práctica para Hogares Españoles" data-fecha="2026-04-26">
-            <div class="card-date">26 de abril de 2026</div>
-            <h2>Cómo Ahorrar en la Factura del Gas en Invierno: Guía Práctica para Hogares Españoles</h2>
-            <span class="card-link">Leer artículo →</span>
+        <a href="/blog/como-ahorrar-en-la-factura-del-gas-en-invierno-guia-practica-para-espanoles/" class="card" data-art="como-ahorrar-en-la-factura-del-gas-en-invierno-guia-practica-para-espanoles" data-titulo="Cómo Ahorrar en la Factura del Gas en Invierno: Guía Práctica para Españoles" data-fecha="2026-04-26" data-img="">
+            
+            <div class="card-body">
+                <div class="card-date">26 de abril de 2026</div>
+                <h2>Cómo Ahorrar en la Factura del Gas en Invierno: Guía Práctica para Españoles</h2>
+                <span class="card-link">Leer artículo →</span>
+            </div>
         </a>
 </div>
 
