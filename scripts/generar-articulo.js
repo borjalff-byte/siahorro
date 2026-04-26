@@ -348,10 +348,25 @@ ${existing.length > 0 ? `<div class="grid">${cards}\n</div>` : '<div class="empt
 }
 
 async function main() {
+    const blogDir = path.join(__dirname, '..', 'blog');
     const mes = new Date().getMonth();
-    const idx = mes % TEMAS.length;
+
+    // Buscar el siguiente tema que aún no tiene artículo publicado
+    let idx = mes % TEMAS.length;
+    for (let i = 0; i < TEMAS.length; i++) {
+        const candidato = TEMAS[idx];
+        const slug = slugify(candidato);
+        // Buscar si ya existe alguna carpeta que empiece por ese slug
+        const existe = fs.existsSync(blogDir) &&
+            fs.readdirSync(blogDir).some(f => f.startsWith(slug.slice(0, 20)));
+        if (!existe) break;
+        console.log(`Tema "${candidato}" ya publicado, probando el siguiente...`);
+        idx = (idx + 1) % TEMAS.length;
+    }
+
     const tema = TEMAS[idx];
     const keywords = UNSPLASH_KEYWORDS[idx];
+    console.log(`Tema seleccionado: ${tema}`);
 
     const articulo = await generarArticulo(tema, keywords);
     actualizarIndice([articulo]);
