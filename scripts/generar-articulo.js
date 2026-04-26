@@ -112,7 +112,7 @@ Devuelve SOLO el contenido en HTML semántico: h1, h2, p, ul, li, strong. Sin DO
 
     const imgHtml = tieneImagen ? `
 <div class="art-img">
-    <img src="cover.jpg" alt="${titulo}" loading="lazy">
+    <img src="/blog/${slug}/cover.jpg" alt="${titulo}" loading="lazy">
     <span class="img-credit">Foto: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></span>
 </div>` : '';
 
