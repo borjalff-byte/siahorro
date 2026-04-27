@@ -241,7 +241,7 @@
         .comp-chip svg { color: var(--orange); flex-shrink: 0; }
 
         /* Stepper contenedor */
-        .comp-stepper { max-width: 700px; margin: 0 auto; position: relative; overflow: hidden; min-height: 420px; }
+        .comp-stepper { max-width: 700px; margin: 0 auto; position: relative; overflow-x: hidden; min-height: 420px; }
 
         /* Barra de progreso */
         .step-indicator { display: flex; align-items: center; gap: 14px; margin-bottom: 32px; }
@@ -911,7 +911,8 @@
                 <div class="amount-context-label" id="amountLabel">Mueve el slider o escribe tu importe mensual</div>
             </div>
             <div class="comp-email-wrap" id="compEmailWrap">
-                <input type="email" id="comp-email" class="form-input" placeholder="tu@email.com (opcional)">
+                <p style="font-size:.82rem;color:var(--t60);margin:0">¿Quieres que guardemos el análisis? Déjanos tu email (opcional).</p>
+                <input type="email" id="comp-email" class="form-input" placeholder="tu@email.com">
                 <label class="rgpd-check-label" id="compRgpdLabel" style="display:none">
                     <input type="checkbox" id="comp-consentimiento">
                     <span>Acepto la <a href="#" onclick="document.getElementById('modalPrivacidad').classList.add('open');return false;" style="color:var(--orange);text-decoration:none">política de privacidad</a></span>
