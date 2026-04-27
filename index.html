@@ -557,7 +557,10 @@
         .tarifa-blur { filter: blur(6px); user-select: none; pointer-events: none; display: inline-block; }
         .lead-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
         .lead-fields input:first-child { grid-column: 1 / -1; }
-        .form-input.error-field { border-color: #f87171; }
+        .lead-fields .form-input { background: #fff; color: #1c1917; border-color: #d4cfc9; }
+        .lead-fields .form-input::placeholder { color: #a8a29e; }
+        .lead-fields .form-input:focus { border-color: var(--orange); }
+        .form-input.error-field { border-color: #f87171 !important; }
         .lead-error { font-size: .8rem; color: #f87171; display: none; margin-top: -4px; margin-bottom: 4px; }
         .rgpd-check-label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: .83rem; color: var(--t60); line-height: 1.5; }
         .rgpd-check-label input[type=checkbox] { accent-color: var(--orange); width: 16px; height: 16px; min-width: 16px; margin-top: 2px; cursor: pointer; }
