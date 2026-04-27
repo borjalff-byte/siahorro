@@ -554,10 +554,11 @@
         .form-msg.ok { display: block; background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.3); color: #4ade80; }
         .form-msg.err { display: block; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); color: #f87171; }
         @media (max-width: 600px) { .contact-form { padding: 28px 20px; } .form-row { grid-template-columns: 1fr; } }
-        .tarifa-blur { filter: blur(6px); user-select: none; pointer-events: none; transition: filter .4s; display: inline-block; }
-        .tarifa-blur.revealed { filter: none; }
-        .btn-unlock { background: linear-gradient(135deg, var(--orange), var(--orange-dk)); color: #fff; border: none; border-radius: 50px; padding: 15px 24px; font-weight: 700; font-size: .96rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; transition: all .22s; text-decoration: none; }
-        .btn-unlock:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(249,115,22,.4); }
+        .tarifa-blur { filter: blur(6px); user-select: none; pointer-events: none; display: inline-block; }
+        .lead-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 4px; }
+        @media (max-width: 600px) { .lead-fields { grid-template-columns: 1fr; } }
+        .form-input.error-field { border-color: #f87171; }
+        .lead-error { font-size: .8rem; color: #f87171; display: none; margin-top: -6px; }
         .rgpd-check-label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: .83rem; color: var(--t60); line-height: 1.5; }
         .rgpd-check-label input[type=checkbox] { accent-color: var(--orange); width: 16px; height: 16px; min-width: 16px; margin-top: 2px; cursor: pointer; }
         .comp-email-wrap { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
@@ -889,9 +890,15 @@
             </div>
         </div>
 
-        <!-- PASO 2 — Sube factura o importe manual -->
+        <!-- PASO 2 — Datos personales + factura -->
         <div class="comp-step-panel" id="panel2">
-            <h3 class="comp-step-title">Sube tu factura</h3>
+            <h3 class="comp-step-title">Tus datos y tu factura</h3>
+            <div class="lead-fields">
+                <input type="text"  id="lead-nombre"   class="form-input" placeholder="Tu nombre" autocomplete="given-name">
+                <input type="email" id="lead-email"    class="form-input" placeholder="tu@email.com" autocomplete="email">
+                <input type="tel"   id="lead-telefono" class="form-input" placeholder="Teléfono" autocomplete="tel">
+            </div>
+            <p class="lead-error" id="leadError">Rellena tu nombre, un email válido y teléfono (mín. 9 dígitos)</p>
             <div class="upload-zone" id="uploadZone">
                 <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png">
                 <div class="upload-icon">
@@ -914,7 +921,13 @@
                 <input type="range" id="rangeSlider" class="range-slider" min="0" max="500" step="5" value="0">
                 <div class="amount-context-label" id="amountLabel">Mueve el slider o escribe tu importe mensual</div>
             </div>
-            <div class="comp-step-actions comp-step-actions--two" style="margin-top:16px;">
+            <div class="form-group" style="margin-top:12px">
+                <label class="rgpd-check-label">
+                    <input type="checkbox" id="lead-consent">
+                    <span>Acepto la <a href="#" onclick="document.getElementById('modalPrivacidad').classList.add('open');return false;" style="color:var(--orange);text-decoration:none">política de privacidad</a></span>
+                </label>
+            </div>
+            <div class="comp-step-actions comp-step-actions--two" style="margin-top:12px;">
                 <button class="btn-step-back" id="btn2Back">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                     Atrás
@@ -936,14 +949,6 @@
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.855L.073 23.927l6.243-1.638A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.368l-.36-.214-3.708.972.988-3.606-.234-.372A9.816 9.816 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/></svg>
                     <span id="btnWaText">¡Quiero mi ahorro! Contactar por WhatsApp</span>
                 </a>
-                <div class="comp-email-wrap" id="compEmailWrap">
-                    <p style="font-size:.82rem;color:var(--t60);margin:0 0 6px">¿Quieres que te guardemos el análisis? Déjanos tu email (opcional).</p>
-                    <input type="email" id="comp-email" class="form-input" placeholder="tu@email.com">
-                    <label class="rgpd-check-label" id="compRgpdLabel" style="display:none">
-                        <input type="checkbox" id="comp-consentimiento">
-                        <span>Acepto la <a href="#" onclick="document.getElementById('modalPrivacidad').classList.add('open');return false;" style="color:var(--orange);text-decoration:none">política de privacidad</a></span>
-                    </label>
-                </div>
                 <p class="result-disclaimer">* Ahorro estimado con carácter orientativo. Los resultados reales pueden variar en función de las condiciones específicas de tu contrato, consumo y tramos horarios. Sujeto a análisis detallado por nuestros asesores energéticos.</p>
                 <button class="btn-recalcular" id="btnRecalcular">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
@@ -1293,6 +1298,32 @@
     const iaError     = document.getElementById('iaError');
     const linkManual  = document.getElementById('linkManual');
     const manualWrap  = document.getElementById('manualWrap');
+    const leadNombre   = document.getElementById('lead-nombre');
+    const leadEmail    = document.getElementById('lead-email');
+    const leadTelefono = document.getElementById('lead-telefono');
+    const leadConsent  = document.getElementById('lead-consent');
+    const leadError    = document.getElementById('leadError');
+
+    function checkStep2Ready() {
+        const tieneFacturaOImporte = facturaFile || (parseFloat(importeEl?.value) > 0);
+        const tieneConsent = leadConsent?.checked;
+        btn2Next.disabled = !(tieneFacturaOImporte && tieneConsent);
+    }
+
+    function validarLeadFields() {
+        const nombre = leadNombre?.value.trim() || '';
+        const email  = leadEmail?.value.trim() || '';
+        const tel    = (leadTelefono?.value || '').replace(/\D/g, '');
+        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const ok = nombre && emailOk && tel.length >= 9;
+        if (!ok && leadError) leadError.style.display = 'block';
+        [leadNombre, leadEmail, leadTelefono].forEach((el, i) => {
+            if (!el) return;
+            const valid = i === 0 ? nombre : i === 1 ? emailOk : tel.length >= 9;
+            el.classList.toggle('error-field', !valid);
+        });
+        return ok;
+    }
 
     const panels = [null,
         document.getElementById('panel1'),
@@ -1348,6 +1379,11 @@
 
     // ── PASO 2: Upload + manual ───────────────────────────────────────
     fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+    leadConsent?.addEventListener('change', checkStep2Ready);
+    [leadNombre, leadEmail, leadTelefono].forEach(el => el?.addEventListener('input', () => {
+        if (leadError) leadError.style.display = 'none';
+        el.classList.remove('error-field');
+    }));
     uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('over'); });
     uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('over'));
     uploadZone.addEventListener('drop', e => {
@@ -1360,7 +1396,7 @@
         uploadFname.style.display = 'block';
         uploadFname.textContent = '✓ ' + f.name;
         iaError.style.display = 'none';
-        btn2Next.disabled = false;
+        checkStep2Ready();
     }
 
     linkManual.addEventListener('click', () => {
@@ -1369,7 +1405,7 @@
         facturaFile = null;
         uploadFname.style.display = 'none';
         fileInput.value = '';
-        btn2Next.disabled = !(parseFloat(importeEl.value) > 0);
+        checkStep2Ready();
     });
 
     if (importeEl) {
@@ -1377,7 +1413,7 @@
             const v = parseFloat(this.value) || 0;
             if (sliderEl) { sliderEl.value = Math.min(500, v); updateSliderFill(v); }
             updateAmountLabel(v);
-            btn2Next.disabled = v <= 0;
+            checkStep2Ready();
         });
     }
     if (sliderEl) {
@@ -1386,7 +1422,7 @@
             if (importeEl) importeEl.value = v > 0 ? v : '';
             updateSliderFill(v);
             updateAmountLabel(v);
-            btn2Next.disabled = v <= 0;
+            checkStep2Ready();
         });
     }
 
@@ -1405,6 +1441,7 @@
     btn2Back.addEventListener('click', () => goToStep(1, 'backward'));
 
     btn2Next.addEventListener('click', async () => {
+        if (!validarLeadFields()) return;
         if (facturaFile) {
             await analizarConIA();
         } else {
@@ -1415,6 +1452,7 @@
             }
             mostrarResultadoManual(v, selectedTipo);
             goToStep(3, 'forward');
+            guardarLeadComparador(null);
         }
     });
 
@@ -1433,19 +1471,10 @@
             const base64 = await fileToBase64(facturaFile);
             const mediaType = facturaFile.type || 'image/jpeg';
 
-            const compEmail = (document.getElementById('comp-email')?.value || '').trim();
-            const compConsent = document.getElementById('comp-consentimiento')?.checked || false;
-
             const resp = await fetch('/api/analizar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    imageData: base64,
-                    mediaType,
-                    tipo: selectedTipo,
-                    email: compEmail || undefined,
-                    consentimiento: compEmail ? compConsent : undefined
-                })
+                body: JSON.stringify({ imageData: base64, mediaType, tipo: selectedTipo })
             });
 
             clearInterval(iv);
@@ -1463,6 +1492,7 @@
             datosFactura = data;
             mostrarResultadoReal(data, selectedTipo);
             goToStep(3, 'forward');
+            guardarLeadComparador(data);
 
         } catch {
             clearInterval(iv);
@@ -1552,8 +1582,8 @@
         if (resultados.length === 0) {
             container.innerHTML = '<p style="text-align:center;color:#78716C;font-size:.88rem;">Tu tarifa actual ya es muy competitiva. Contáctanos para confirmarlo.</p>';
             document.getElementById('resAnual').textContent = '0 €/año';
-            document.getElementById('btnWaRes').href = `https://wa.me/34655941658?text=${encodeURIComponent('Hola, me gustaría que revisarais mi tarifa actual de ' + tipo)}`;
-            document.getElementById('btnWaText').textContent = 'Hablar con un asesor';
+            document.getElementById('btnWaRes').href = `https://wa.me/34655941658?text=${encodeURIComponent('Hola, me gustaría que un asesor revisase mi tarifa actual de ' + tipo + '. ¡Gracias!')}`;
+            document.getElementById('btnWaText').textContent = 'Hablar con un asesor por WhatsApp';
             return;
         }
 
@@ -1589,28 +1619,15 @@
 
         const label = tipo === 'luz' ? 'luz' : tipo === 'gas' ? 'gas' : 'luz y gas';
         const msg = encodeURIComponent(
-            `Hola! He analizado mi factura de ${label} en vuestra web.\n` +
-            `Mejor opción: ${mejor.nombre} (${mejor.comercializadora})\n` +
-            `Ahorro estimado: ${mejor.ahorro}€/mes · ${Math.round(anual)}€/año\n` +
-            `Me gustaría que lo analizarais en detalle. ¡Gracias!`
+            `Hola, he analizado mi factura de ${label} en si-ahorro.es.\n` +
+            `Puedo ahorrar ${mejor.ahorro}€/mes cambiando a una ${mejor.nombre}.\n` +
+            `Me gustaría que me asesoraseis con el cambio. ¡Gracias!`
         );
-        const waUrl = `https://wa.me/34655941658?text=${msg}`;
-
         const btnWa = document.getElementById('btnWaRes');
-        btnWa.removeAttribute('href');
-        btnWa.className = 'btn-unlock';
-        btnWa.innerHTML = `
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Ver comercializadoras + gestión del cambio gratis`;
-        btnWa.onclick = function(e) {
-            e.preventDefault();
-            document.querySelectorAll('.tarifa-blur').forEach(el => el.classList.add('revealed'));
-            this.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.855L.073 23.927l6.243-1.638A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.368l-.36-.214-3.708.972.988-3.606-.234-.372A9.816 9.816 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/></svg>
-                ¡Contactar por WhatsApp y empezar a ahorrar!`;
-            this.onclick = () => window.open(waUrl, '_blank');
-            setTimeout(() => window.open(waUrl, '_blank'), 300);
-        };
+        btnWa.href = `https://wa.me/34655941658?text=${msg}`;
+        btnWa.className = 'btn-wa-res';
+        btnWa.onclick = null;
+        document.getElementById('btnWaText').textContent = `¡Quiero ahorrar ${mejor.ahorro}€/mes! Contactar por WhatsApp`;
     }
 
     // ── ANIMACIÓN DE CONTADOR ─────────────────────────────────────────
@@ -1625,31 +1642,41 @@
         })(start);
     }
 
-    // ── EMAIL COMPARADOR — mostrar checkbox + guardar lead al dar consentimiento ─
-    const compEmailInput = document.getElementById('comp-email');
-    const compRgpdLabel = document.getElementById('compRgpdLabel');
-    const compConsentCheck = document.getElementById('comp-consentimiento');
-    if (compEmailInput && compRgpdLabel) {
-        compEmailInput.addEventListener('input', () => {
-            compRgpdLabel.style.display = compEmailInput.value.trim() ? 'flex' : 'none';
-        });
-    }
-    if (compConsentCheck) {
-        compConsentCheck.addEventListener('change', async () => {
-            if (!compConsentCheck.checked || !compEmailInput?.value.trim()) return;
-            try {
-                await fetch('/api/guardar-lead-comparador', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: compEmailInput.value.trim(),
-                        tipo: selectedTipo,
-                        datos: datosFactura,
-                        consentimiento: true
-                    })
-                });
-            } catch { /* silencioso */ }
-        });
+    // ── GUARDAR LEAD COMPARADOR ───────────────────────────────────────
+    function guardarLeadComparador(datos) {
+        const tarifas = selectedTipo === 'gas' ? TARIFAS_GAS : TARIFAS_LUZ;
+        let mejor_tarifa = null, ahorro_mes = null;
+        if (datos) {
+            const kwh = datos.kwh;
+            const potencia = datos.potencia_kw || 3.45;
+            const dias = datos.dias || 30;
+            const importe = datos.importe_total || Math.round(kwh * datos.precio_kwh * 100) / 100;
+            const resultados = tarifas.map(t => {
+                const coste = selectedTipo === 'gas'
+                    ? (kwh * t.precio_e) + (t.precio_fijo_mes * (dias / 30))
+                    : (kwh * t.precio_e) + (potencia * t.precio_p_dia * dias);
+                const ahorro = Math.round((importe - coste) * 100) / 100;
+                return { nombre: t.nombre, ahorro };
+            }).filter(t => t.ahorro > 0).sort((a, b) => b.ahorro - a.ahorro);
+            if (resultados.length > 0) {
+                mejor_tarifa = resultados[0].nombre;
+                ahorro_mes = resultados[0].ahorro;
+            }
+        }
+        fetch('/api/guardar-lead-comparador', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                nombre: leadNombre?.value.trim(),
+                email: leadEmail?.value.trim(),
+                telefono: leadTelefono?.value.trim(),
+                tipo: selectedTipo,
+                datos,
+                mejor_tarifa,
+                ahorro_mes,
+                consentimiento: true
+            })
+        }).catch(() => {});
     }
 
     // ── RECALCULAR ────────────────────────────────────────────────────
@@ -1665,6 +1692,11 @@
         linkManual.style.display = 'block';
         if (importeEl) importeEl.value = '';
         if (sliderEl) { sliderEl.value = 0; updateSliderFill(0); }
+        if (leadNombre) leadNombre.value = '';
+        if (leadEmail) leadEmail.value = '';
+        if (leadTelefono) leadTelefono.value = '';
+        if (leadConsent) leadConsent.checked = false;
+        if (leadError) leadError.style.display = 'none';
         btn2Next.disabled = true;
         goToStep(1, 'backward');
     });
