@@ -554,6 +554,10 @@
         .form-msg.ok { display: block; background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.3); color: #4ade80; }
         .form-msg.err { display: block; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); color: #f87171; }
         @media (max-width: 600px) { .contact-form { padding: 28px 20px; } .form-row { grid-template-columns: 1fr; } }
+        .rgpd-check-label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: .83rem; color: var(--t60); line-height: 1.5; }
+        .rgpd-check-label input[type=checkbox] { accent-color: var(--orange); width: 16px; height: 16px; min-width: 16px; margin-top: 2px; cursor: pointer; }
+        .comp-email-wrap { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .comp-email-wrap .form-input { width: 100%; box-sizing: border-box; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
@@ -906,6 +910,13 @@
                 <input type="range" id="rangeSlider" class="range-slider" min="0" max="500" step="5" value="0">
                 <div class="amount-context-label" id="amountLabel">Mueve el slider o escribe tu importe mensual</div>
             </div>
+            <div class="comp-email-wrap" id="compEmailWrap">
+                <input type="email" id="comp-email" class="form-input" placeholder="tu@email.com (opcional)">
+                <label class="rgpd-check-label" id="compRgpdLabel" style="display:none">
+                    <input type="checkbox" id="comp-consentimiento">
+                    <span>Acepto la <a href="#" onclick="document.getElementById('modalPrivacidad').classList.add('open');return false;" style="color:var(--orange);text-decoration:none">política de privacidad</a></span>
+                </label>
+            </div>
             <div class="comp-step-actions comp-step-actions--two" style="margin-top:16px;">
                 <button class="btn-step-back" id="btn2Back">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -1143,6 +1154,12 @@
             <div class="form-group">
                 <label for="cf-mensaje">Mensaje *</label>
                 <textarea id="cf-mensaje" class="form-input" placeholder="Cuéntanos en qué podemos ayudarte..."></textarea>
+            </div>
+            <div class="form-group" style="margin-top:4px">
+                <label class="rgpd-check-label">
+                    <input type="checkbox" id="cf-consentimiento" required>
+                    <span>He leído y acepto la <a href="#" onclick="document.getElementById('modalPrivacidad').classList.add('open');return false;" style="color:var(--orange);text-decoration:none">política de privacidad</a></span>
+                </label>
             </div>
             <button type="submit" class="form-submit" id="formSubmit">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -1411,10 +1428,19 @@
             const base64 = await fileToBase64(facturaFile);
             const mediaType = facturaFile.type || 'image/jpeg';
 
+            const compEmail = (document.getElementById('comp-email')?.value || '').trim();
+            const compConsent = document.getElementById('comp-consentimiento')?.checked || false;
+
             const resp = await fetch('/api/analizar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ imageData: base64, mediaType })
+                body: JSON.stringify({
+                    imageData: base64,
+                    mediaType,
+                    tipo: selectedTipo,
+                    email: compEmail || undefined,
+                    consentimiento: compEmail ? compConsent : undefined
+                })
             });
 
             clearInterval(iv);
@@ -1579,6 +1605,15 @@
         })(start);
     }
 
+    // ── EMAIL COMPARADOR — mostrar checkbox al escribir ───────────────
+    const compEmailInput = document.getElementById('comp-email');
+    const compRgpdLabel = document.getElementById('compRgpdLabel');
+    if (compEmailInput && compRgpdLabel) {
+        compEmailInput.addEventListener('input', () => {
+            compRgpdLabel.style.display = compEmailInput.value.trim() ? 'flex' : 'none';
+        });
+    }
+
     // ── RECALCULAR ────────────────────────────────────────────────────
     document.getElementById('btnRecalcular').addEventListener('click', () => {
         selectedTipo = null; facturaFile = null; datosFactura = null;
@@ -1677,7 +1712,8 @@
         <p>Sí Ahorro Asesoría Energética, con domicilio en Valencia, España. Contacto: a través del formulario web o WhatsApp.</p>
         <h3>Datos que recogemos</h3>
         <ul>
-            <li>Nombre y teléfono facilitados a través del formulario de contacto.</li>
+            <li>Nombre, email y teléfono facilitados a través del formulario de contacto.</li>
+            <li>Email facilitado voluntariamente al usar el comparador de tarifas.</li>
             <li>Imágenes o PDFs de facturas de energía subidos voluntariamente para su análisis.</li>
             <li>Datos de navegación anónimos a través de Google Analytics (dirección IP anonimizada, páginas visitadas, tiempo de visita).</li>
         </ul>
@@ -1688,7 +1724,7 @@
         <h3>Conservación</h3>
         <p>Los datos se conservan el tiempo necesario para la prestación del servicio y se eliminan cuando ya no son necesarios o cuando el usuario solicita su supresión.</p>
         <h3>Derechos</h3>
-        <p>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición y portabilidad contactando con nosotros a través de WhatsApp o el formulario de contacto.</p>
+        <p>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición y portabilidad enviando un email a <strong>info@si-ahorro.es</strong>. Atenderemos tu solicitud en un plazo máximo de 30 días.</p>
         <h3>Cookies</h3>
         <p>Este sitio utiliza Google Analytics para análisis de tráfico con datos anonimizados. No se utilizan cookies publicitarias ni de seguimiento de terceros.</p>
     </div>
@@ -1725,7 +1761,8 @@
                     nombre: document.getElementById('cf-nombre').value,
                     email: document.getElementById('cf-email').value,
                     telefono: document.getElementById('cf-telefono').value,
-                    mensaje: document.getElementById('cf-mensaje').value
+                    mensaje: document.getElementById('cf-mensaje').value,
+                    consentimiento: document.getElementById('cf-consentimiento').checked
                 })
             });
             const data = await res.json();

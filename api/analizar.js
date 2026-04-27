@@ -16,6 +16,22 @@ Formato exacto requerido:
 Si un dato no aparece claramente en la factura, pon null para ese campo.
 Si el documento no es una factura de energía, devuelve: {"error": "no_es_factura"}`;
 
+async function guardarLeadComparador(datos) {
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) return;
+    try {
+        await fetch(`${process.env.SUPABASE_URL}/rest/v1/leads_comparador`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': process.env.SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+                'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify(datos)
+        });
+    } catch { /* no bloquear el flujo si falla */ }
+}
+
 module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -24,7 +40,7 @@ module.exports = async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'method_not_allowed' });
 
-    const { imageData, mediaType } = req.body || {};
+    const { imageData, mediaType, email, consentimiento, tipo } = req.body || {};
 
     if (!imageData || !mediaType) {
         return res.status(400).json({ error: 'missing_data' });
@@ -55,6 +71,18 @@ module.exports = async function handler(req, res) {
             data = JSON.parse(jsonMatch ? jsonMatch[0] : raw);
         } catch {
             return res.status(200).json({ error: 'parse_error' });
+        }
+
+        if (!data.error && email && consentimiento) {
+            guardarLeadComparador({
+                email,
+                tipo: tipo || null,
+                comercializadora_actual: data.comercializadora || null,
+                kwh: data.kwh || null,
+                precio_kwh: data.precio_kwh || null,
+                importe_actual: data.importe_total || null,
+                consentimiento: true
+            });
         }
 
         return res.status(200).json(data);
