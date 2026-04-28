@@ -110,7 +110,10 @@ async function extractBillData(fileBuffer, mimeType) {
   });
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-002' });
+  const model = genAI.getGenerativeModel(
+    { model: 'gemini-1.5-flash' },
+    { apiVersion: 'v1' }
+  );
 
   // Normalizar mime type (Telegram a veces envía 'image/jpg')
   const normalizedMime = mimeType === 'image/jpg' ? 'image/jpeg' : mimeType;
