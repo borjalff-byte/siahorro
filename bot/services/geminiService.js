@@ -1,4 +1,4 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const Anthropic = require('@anthropic-ai/sdk');
 const { GEMINI_TIMEOUT_MS } = require('../config/constants');
 
 const PROMPT = `Eres un experto en facturas de electricidad españolas (tarifa 2.0TD y 3.0TD). Analiza esta factura y extrae TODOS los datos que puedas leer.
@@ -46,16 +46,14 @@ function withTimeout(promise, ms, label) {
   ]);
 }
 
-function parseGeminiJson(raw) {
+function parseJson(raw) {
   const cleaned = raw.trim();
-  // Intento 1: JSON directo
   try { return JSON.parse(cleaned); } catch {}
-  // Intento 2: extraer bloque JSON con regex (por si Gemini añade texto extra)
   const match = cleaned.match(/\{[\s\S]*\}/);
   if (match) {
     try { return JSON.parse(match[0]); } catch {}
   }
-  throw new Error(`Gemini no devolvió JSON válido. Primeros 300 chars: ${cleaned.slice(0, 300)}`);
+  throw new Error(`No se pudo parsear JSON. Primeros 300 chars: ${cleaned.slice(0, 300)}`);
 }
 
 function validateAndNormalize(data) {
@@ -72,18 +70,15 @@ function validateAndNormalize(data) {
     );
   }
 
-  // Normalizar todos los campos numéricos a Number, defaulting nulls a 0
   const numericFields = [
     'dias', 'kwh_total', 'total', 'coste_potencia', 'coste_energia',
     'e_reactiva', 'excesos_pot', 'impuesto_electrico', 'otros_conceptos', 'iva',
-    'potencia_p1_kw', 'potencia_p2_kw',
-    'kwh_p1', 'kwh_p2', 'kwh_p3'
+    'potencia_p1_kw', 'potencia_p2_kw', 'kwh_p1', 'kwh_p2', 'kwh_p3'
   ];
   numericFields.forEach(f => {
     data[f] = data[f] != null && data[f] !== '' ? Number(data[f]) : 0;
   });
 
-  // Sanity checks
   if (data.total <= 0) throw new Error('El total de la factura no es válido (≤ 0€).');
   if (data.dias <= 0 || data.dias > 365) throw new Error(`Período de facturación inválido: ${data.dias} días.`);
   if (data.kwh_total < 0) throw new Error('Los kWh consumidos no pueden ser negativos.');
@@ -93,48 +88,56 @@ function validateAndNormalize(data) {
 
 async function extractBillData(fileBuffer, mimeType) {
   const ALLOWED_MIME = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf'];
-  const MAX_BYTES = 15 * 1024 * 1024; // 15MB
+  const MAX_BYTES = 15 * 1024 * 1024;
 
   if (!ALLOWED_MIME.includes(mimeType)) {
     throw new Error(`Formato no soportado: ${mimeType}. Envía la factura como JPG, PNG, WebP o PDF.`);
   }
   if (fileBuffer.length > MAX_BYTES) {
-    throw new Error(
-      `Archivo demasiado grande (${(fileBuffer.length / 1024 / 1024).toFixed(1)}MB). Máximo 15MB.`
-    );
+    throw new Error(`Archivo demasiado grande (${(fileBuffer.length / 1024 / 1024).toFixed(1)}MB). Máximo 15MB.`);
   }
 
-  console.log('[gemini] Iniciando análisis', {
+  console.log('[claude] Iniciando análisis', {
     mimeType,
     fileSizeKB: Math.round(fileBuffer.length / 1024)
   });
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-lite' });
-
-  // Normalizar mime type (Telegram a veces envía 'image/jpg')
   const normalizedMime = mimeType === 'image/jpg' ? 'image/jpeg' : mimeType;
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-  const imagePart = {
-    inlineData: {
-      data: fileBuffer.toString('base64'),
-      mimeType: normalizedMime
-    }
+  // Claude soporta imagen directa; para PDF usa base64 con media_type application/pdf
+  const mediaType = normalizedMime;
+  const imageSource = {
+    type: 'base64',
+    media_type: mediaType,
+    data: fileBuffer.toString('base64')
   };
 
-  const result = await withTimeout(
-    model.generateContent([PROMPT, imagePart]),
+  const response = await withTimeout(
+    client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1024,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'image', source: imageSource },
+            { type: 'text', text: PROMPT }
+          ]
+        }
+      ]
+    }),
     GEMINI_TIMEOUT_MS,
-    'Gemini extractBillData'
+    'Claude extractBillData'
   );
 
-  const raw = result.response.text();
-  console.log('[gemini] Respuesta recibida', { chars: raw.length });
+  const raw = response.content[0].text;
+  console.log('[claude] Respuesta recibida', { chars: raw.length });
 
-  const data = parseGeminiJson(raw);
+  const data = parseJson(raw);
   const validated = validateAndNormalize(data);
 
-  console.log('[gemini] Extracción completada', {
+  console.log('[claude] Extracción completada', {
     comercializadora: validated.comercializadora,
     dias: validated.dias,
     kwh_total: validated.kwh_total,
