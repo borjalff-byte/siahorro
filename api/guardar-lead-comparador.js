@@ -1,5 +1,9 @@
 const nodemailer = require('nodemailer');
 
+function esc(str) {
+    return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 const transporter = nodemailer.createTransport({
     host: 'mailsrv1.dondominio.com',
     port: 587,
@@ -18,7 +22,7 @@ module.exports = async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'method_not_allowed' });
 
-    const { nombre, email, telefono, tipo, datos, mejor_tarifa, ahorro_mes, consentimiento } = req.body || {};
+    const { nombre, email, telefono, tipo, datos, mejor_tarifa, mejor_comercializadora, ahorro_mes, consentimiento } = req.body || {};
 
     if (!nombre || !email || !telefono || !consentimiento) {
         return res.status(400).json({ error: 'missing_fields' });
@@ -26,25 +30,27 @@ module.exports = async function handler(req, res) {
 
     const ahorro_anual = ahorro_mes ? Math.round(ahorro_mes * 12) : null;
 
-    await Promise.allSettled([
+    const [emailResult, dbResult] = await Promise.allSettled([
         // Email a Borja con todos los datos (incluyendo comercializadora)
         transporter.sendMail({
             from: '"Sí Ahorro Web" <info@si-ahorro.es>',
             to: 'info@si-ahorro.es',
-            subject: `🔥 Nuevo lead comparador — ${nombre}`,
+            cc: 'borjalff@gmail.com',
+            subject: `Nuevo cliente comparador — ${nombre}`,
             html: `
                 <div style="font-family:Arial,sans-serif;max-width:520px">
                     <h2 style="color:#F97316">Nuevo lead del comparador</h2>
                     <table style="border-collapse:collapse;width:100%">
-                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Nombre</td><td style="padding:8px">${nombre}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Email</td><td style="padding:8px"><a href="mailto:${email}">${email}</a></td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Teléfono</td><td style="padding:8px"><a href="tel:${telefono}">${telefono}</a></td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Tipo</td><td style="padding:8px">${tipo || '–'}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Comercializadora actual</td><td style="padding:8px">${datos?.comercializadora || '–'}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Importe actual</td><td style="padding:8px">${datos?.importe_total ? datos.importe_total + '€/mes' : '–'}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Consumo</td><td style="padding:8px">${datos?.kwh ? datos.kwh + ' kWh' : '–'}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5;color:#F97316">Mejor tarifa</td><td style="padding:8px;color:#F97316;font-weight:bold">${mejor_tarifa || '–'}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5;color:#16a34a">Ahorro estimado</td><td style="padding:8px;color:#16a34a;font-weight:bold">${ahorro_mes ? ahorro_mes + '€/mes · ' + ahorro_anual + '€/año' : '–'}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Nombre</td><td style="padding:8px">${esc(nombre)}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Email</td><td style="padding:8px"><a href="mailto:${esc(email)}">${esc(email)}</a></td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Teléfono</td><td style="padding:8px"><a href="tel:${esc(telefono)}">${esc(telefono)}</a></td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Tipo</td><td style="padding:8px">${esc(tipo) || '–'}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Comercializadora actual</td><td style="padding:8px">${esc(datos?.comercializadora) || '–'}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Importe actual</td><td style="padding:8px">${datos?.importe_total ? esc(datos.importe_total) + '€/mes' : '–'}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Consumo</td><td style="padding:8px">${datos?.kwh ? esc(datos.kwh) + ' kWh' : '–'}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5;color:#F97316">Mejor tarifa</td><td style="padding:8px;color:#F97316;font-weight:bold">${esc(mejor_tarifa) || '–'}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5;color:#F97316">Comercializadora recomendada</td><td style="padding:8px;color:#F97316;font-weight:bold">${esc(mejor_comercializadora) || '–'}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5;color:#16a34a">Ahorro estimado</td><td style="padding:8px;color:#16a34a;font-weight:bold">${ahorro_mes ? esc(ahorro_mes) + '€/mes · ' + esc(ahorro_anual) + '€/año' : '–'}</td></tr>
                     </table>
                 </div>
             `
@@ -70,6 +76,7 @@ module.exports = async function handler(req, res) {
                     precio_kwh: datos?.precio_kwh || null,
                     importe_actual: datos?.importe_total || null,
                     mejor_tarifa: mejor_tarifa || null,
+                    mejor_comercializadora: mejor_comercializadora || null,
                     ahorro_mes: ahorro_mes || null,
                     consentimiento: true
                 })
@@ -77,5 +84,12 @@ module.exports = async function handler(req, res) {
         })()
     ]);
 
-    return res.status(200).json({ ok: true });
+    const emailOk = emailResult.status === 'fulfilled';
+    const emailErr = emailResult.status === 'rejected' ? emailResult.reason?.message : null;
+
+    return res.status(200).json({
+        ok: true,
+        email_sent: emailOk,
+        email_error: emailErr || undefined
+    });
 };

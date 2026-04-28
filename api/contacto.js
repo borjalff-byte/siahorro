@@ -1,5 +1,9 @@
 const nodemailer = require('nodemailer');
 
+function esc(str) {
+    return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 const transporter = nodemailer.createTransport({
     host: 'mailsrv1.dondominio.com',
     port: 587,
@@ -53,11 +57,11 @@ module.exports = async function handler(req, res) {
                 subject: `Nuevo mensaje de ${nombre}`,
                 html: `
                     <h2>Nuevo mensaje desde si-ahorro.es</h2>
-                    <p><strong>Nombre:</strong> ${nombre}</p>
-                    <p><strong>Email:</strong> ${email}</p>
-                    <p><strong>Teléfono:</strong> ${telefono || 'No indicado'}</p>
+                    <p><strong>Nombre:</strong> ${esc(nombre)}</p>
+                    <p><strong>Email:</strong> ${esc(email)}</p>
+                    <p><strong>Teléfono:</strong> ${esc(telefono) || 'No indicado'}</p>
                     <p><strong>Mensaje:</strong></p>
-                    <p>${mensaje.replace(/\n/g, '<br>')}</p>
+                    <p>${esc(mensaje).replace(/\n/g, '<br>')}</p>
                 `
             }),
             // Acuse de recibo al cliente
@@ -68,7 +72,7 @@ module.exports = async function handler(req, res) {
                 html: `
                     <div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;background:#171410;color:#f5f0e8;padding:40px 32px;border-radius:12px">
                         <img src="https://www.si-ahorro.es/logo/logo-transparent-png.png" alt="Sí Ahorro" style="height:38px;margin-bottom:28px">
-                        <h2 style="color:#F97316;font-size:1.25rem;margin:0 0 16px">Hola ${nombre},</h2>
+                        <h2 style="color:#F97316;font-size:1.25rem;margin:0 0 16px">Hola ${esc(nombre)},</h2>
                         <p style="line-height:1.7;color:#c8bfb0">Gracias por contactar con <strong style="color:#f5f0e8">Sí Ahorro</strong>.</p>
                         <p style="line-height:1.7;color:#c8bfb0">Hemos recibido tu consulta y te responderemos en menos de <strong style="color:#f5f0e8">24 horas</strong> en horario laboral.</p>
                         <p style="line-height:1.7;color:#c8bfb0">Si tienes cualquier urgencia puedes contactarnos directamente:</p>
@@ -87,7 +91,7 @@ module.exports = async function handler(req, res) {
         ]);
 
         return res.status(200).json({ ok: true });
-    } catch (err) {
-        return res.status(500).json({ error: 'send_failed', message: err.message });
+    } catch {
+        return res.status(500).json({ error: 'send_failed' });
     }
 };

@@ -46,6 +46,17 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'missing_data' });
     }
 
+    const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
+    if (!ALLOWED_TYPES.includes(mediaType)) {
+        return res.status(415).json({ error: 'unsupported_format' });
+    }
+
+    // 15MB en base64 cubre cualquier foto de móvil o PDF de factura real
+    const MAX_B64 = 15 * 1024 * 1024;
+    if (imageData.length > MAX_B64) {
+        return res.status(413).json({ error: 'file_too_large' });
+    }
+
     try {
         const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -87,7 +98,7 @@ module.exports = async function handler(req, res) {
 
         return res.status(200).json(data);
 
-    } catch (err) {
-        return res.status(500).json({ error: 'server_error', message: err.message });
+    } catch {
+        return res.status(500).json({ error: 'server_error' });
     }
 };

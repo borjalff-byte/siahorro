@@ -319,7 +319,7 @@
         .result-actual-box { background: rgba(249,115,22,.06); border: 1px solid rgba(249,115,22,.18); border-radius: 14px; padding: 16px 20px; font-size: .86rem; color: #57534E; text-align: center; line-height: 1.65; }
         .result-actual-box strong { color: #1C1917; }
         .result-tarifas { display: flex; flex-direction: column; gap: 10px; }
-        .tarifa-row { background: #FFFFFF; border: 1px solid rgba(249,115,22,.15); border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; gap: 14px; transition: all .22s; position: relative; overflow: hidden; }
+        .tarifa-row { background: #FFFFFF; border: 1px solid rgba(249,115,22,.15); border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; gap: 14px; transition: all .22s; position: relative; overflow: visible; }
         .tarifa-row:hover { border-color: rgba(249,115,22,.35); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(249,115,22,.1); }
         .tarifa-row.best { border-color: var(--orange); box-shadow: 0 6px 24px rgba(249,115,22,.18); }
         .tarifa-badge { position: absolute; top: -11px; right: 14px; background: linear-gradient(135deg, var(--orange), var(--orange-dk)); color: #fff; font-size: .68rem; font-weight: 700; letter-spacing: .5px; padding: 3px 9px; border-radius: 50px; text-transform: uppercase; }
@@ -1648,7 +1648,7 @@
     // ── GUARDAR LEAD COMPARADOR ───────────────────────────────────────
     function guardarLeadComparador(datos) {
         const tarifas = selectedTipo === 'gas' ? TARIFAS_GAS : TARIFAS_LUZ;
-        let mejor_tarifa = null, ahorro_mes = null;
+        let mejor_tarifa = null, mejor_comercializadora = null, ahorro_mes = null;
         if (datos) {
             const kwh = datos.kwh;
             const potencia = datos.potencia_kw || 3.45;
@@ -1659,10 +1659,11 @@
                     ? (kwh * t.precio_e) + (t.precio_fijo_mes * (dias / 30))
                     : (kwh * t.precio_e) + (potencia * t.precio_p_dia * dias);
                 const ahorro = Math.round((importe - coste) * 100) / 100;
-                return { nombre: t.nombre, ahorro };
+                return { nombre: t.nombre, comercializadora: t.comercializadora, ahorro };
             }).filter(t => t.ahorro > 0).sort((a, b) => b.ahorro - a.ahorro);
             if (resultados.length > 0) {
                 mejor_tarifa = resultados[0].nombre;
+                mejor_comercializadora = resultados[0].comercializadora;
                 ahorro_mes = resultados[0].ahorro;
             }
         }
@@ -1676,6 +1677,7 @@
                 tipo: selectedTipo,
                 datos,
                 mejor_tarifa,
+                mejor_comercializadora,
                 ahorro_mes,
                 consentimiento: true
             })

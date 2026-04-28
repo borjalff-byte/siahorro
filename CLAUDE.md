@@ -18,29 +18,38 @@ Eres un desarrollador web profesional de alto nivel con más de 10 años de expe
 
 ## Arquitectura del proyecto
 
-**Sí Ahorro** es un comparador de tarifas de luz y gas con IA. Desplegado en Vercel (proyecto `siahorro`).
+**Sí Ahorro** es un comparador de tarifas de luz y gas con IA. Desplegado en Vercel (proyecto `siahorro`). URL: https://www.si-ahorro.es
 
 ### Stack
 - **Frontend**: HTML/CSS/JS vanilla en un único `index.html` (sin framework). Todo el CSS está inline en `<style>` y el JS al final del `<body>`.
-- **Backend**: Serverless function en `api/analizar.js` — ejecutada por Vercel. Recibe una factura en base64 (imagen o PDF), la pasa a Claude y devuelve un JSON con los datos extraídos.
-- **IA**: Anthropic SDK (`@anthropic-ai/sdk`), modelo `claude-haiku-4-5-20251001`. La API key se inyecta como variable de entorno `ANTHROPIC_API_KEY` en Vercel.
+- **Backend**: Serverless functions en `api/`:
+  - `api/analizar.js`: recibe factura en base64 (imagen o PDF), la pasa a Claude y devuelve JSON con `kwh`, `precio_kwh`, `potencia_kw`, `dias`, `importe_total`, `comercializadora`.
+  - `api/contacto.js`: formulario de contacto vía Nodemailer (SMTP DonDominio, puerto 587).
+- **IA**: Anthropic SDK (`@anthropic-ai/sdk`), modelo `claude-haiku-4-5-20251001`.
+- **Blog**: Estático en `blog/`. Cada artículo es `blog/{slug}/index.html` + `cover.jpg`.
 
-### Flujo principal
-1. El usuario sube una factura (imagen o PDF) en `index.html`.
-2. El frontend codifica el archivo en base64 y hace `POST /api/analizar`.
-3. La función serverless llama a Claude (visión/documentos) para extraer: `kwh`, `precio_kwh`, `potencia_kw`, `dias`, `importe_total`, `comercializadora`.
-4. El frontend recibe el JSON y calcula el ahorro comparando con las tarifas disponibles.
+### Blog automatizado
+- `scripts/generar-articulo.js` genera un artículo nuevo cada mes vía GitHub Actions (`.github/workflows/blog.yml`, cron día 1 a las 9:00 UTC).
+- `blog/publicados.json` es la **única fuente de verdad** para saber qué temas están publicados — nunca parsear `index.html` para esto.
+- Imágenes: descargadas de **Pexels API** como `cover.jpg` estático en la carpeta del artículo. Las rutas en el HTML deben ser **absolutas** (`/blog/{slug}/cover.jpg`) — con `cleanUrls: true` las rutas relativas se rompen.
+- `reconstruirIndice()` regenera `blog/index.html` completo cruzando `publicados.json` con las carpetas existentes.
 
 ### Diseño visual
-- Paleta oscura con acento naranja (`--orange: #F97316`, `--orange-dk: #EA580C`).
+- Paleta oscura con acento naranja (`--orange: #F97316`, `--orange-dk: #EA580C`), fondo `#171410`.
 - Fuente: Inter (Google Fonts).
 - Responsive con breakpoints en 680px y 480px.
-- Animaciones CSS: `fadeUp`, `floatY`, `shapeIn`, `marcasScroll`.
 
 ### Otros archivos
-- `flyer.html`: Flyer imprimible A5 (148×210mm) del negocio, independiente del sitio.
-- `logo/`: Logos en SVG, PNG y PDF (con y sin fondo transparente).
-- `tarifas/`: Capturas de tarifas de comercializadoras (Neon, Niba, Gana, Ides) usadas como referencia.
+- `flyer.html`: Flyer imprimible A5 (148×210mm), independiente del sitio.
+- `logo/`: Logos en SVG, PNG y PDF.
+- `tarifas/`: Capturas de tarifas de comercializadoras (Neon, Niba, Gana, Ides) usadas como referencia visual.
+
+## Variables de entorno
+
+En Vercel dashboard y como GitHub Secrets:
+- `ANTHROPIC_API_KEY` — análisis de facturas + generación de artículos del blog
+- `EMAIL_PASSWORD` — SMTP DonDominio para formulario de contacto
+- `PEXELS_API_KEY` — imágenes para artículos del blog
 
 ## Despliegue
 
@@ -48,5 +57,15 @@ Eres un desarrollador web profesional de alto nivel con más de 10 años de expe
 vercel --prod
 ```
 
-La variable de entorno `ANTHROPIC_API_KEY` debe estar configurada en el dashboard de Vercel.
 El proyecto ya está vinculado: `projectId: prj_6jvzv8htVBkVpHGdPhtma8jY1Ooj`.
+El blog se despliega automáticamente: GitHub Actions genera el artículo → hace push → Vercel auto-despliega.
+
+## Lecciones aprendidas — errores a no repetir
+
+- **`source.unsplash.com` está retirado desde 2023** — nunca usarlo. Para imágenes usar Pexels API descargando `cover.jpg` como archivo estático local.
+- **Rutas de imagen relativas se rompen con `cleanUrls: true`** — la URL queda `/blog/slug` sin barra final y el navegador resuelve `cover.jpg` como `/blog/cover.jpg`. Siempre usar rutas absolutas.
+- **`npm ci` requiere `package-lock.json` en el repo** — si no existe, hacer `npm install` localmente y commitear el lock file antes de que corra el workflow.
+- **GitHub Actions necesita `permissions: contents: write`** para poder hacer `git push` desde el workflow.
+- **Claude puede devolver bloques ```html en respuestas** — limpiar siempre con `.replace(/^```html\s*/i, '').replace(/```\s*$/i, '').trim()`.
+- **Nunca usar `git add -A` sin revisar** — puede incluir `node_modules` o `.claude/`. Añadir siempre archivos específicos. Verificar `.gitignore` antes del primer commit.
+- **`publicados.json` como única fuente de verdad del blog** — nunca parsear `index.html` para detectar duplicados; el HTML puede estar desincronizado entre runs del workflow.
