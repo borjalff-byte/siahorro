@@ -105,28 +105,20 @@ async function extractBillData(fileBuffer, mimeType) {
   const normalizedMime = mimeType === 'image/jpg' ? 'image/jpeg' : mimeType;
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-  // Claude soporta imagen directa; para PDF usa base64 con media_type application/pdf
-  const mediaType = normalizedMime;
-  const imageSource = {
-    type: 'base64',
-    media_type: mediaType,
-    data: fileBuffer.toString('base64')
-  };
+  // PDFs usan type:'document'; imágenes usan type:'image'
+  const isPdf = normalizedMime === 'application/pdf';
+  const contentBlock = isPdf
+    ? { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: fileBuffer.toString('base64') } }
+    : { type: 'image', source: { type: 'base64', media_type: normalizedMime, data: fileBuffer.toString('base64') } };
+
+  const requestOptions = isPdf ? { headers: { 'anthropic-beta': 'pdfs-2024-09-25' } } : {};
 
   const response = await withTimeout(
     client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            { type: 'image', source: imageSource },
-            { type: 'text', text: PROMPT }
-          ]
-        }
-      ]
-    }),
+      messages: [{ role: 'user', content: [contentBlock, { type: 'text', text: PROMPT }] }]
+    }, requestOptions),
     GEMINI_TIMEOUT_MS,
     'Claude extractBillData'
   );
