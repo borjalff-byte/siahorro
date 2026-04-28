@@ -21,27 +21,31 @@ function calcularCoste(tarifa, bill) {
 
   let coste_energia, coste_potencia;
 
-  if (tarifa.tipo === 'indexada') {
-    const pvpc = tarifasData.pvpc_media_12m;
-    coste_energia = kwh_total * (pvpc + (tarifa.precios.spread_kwh || 0));
-  } else if (tarifa.tipo === 'discriminacion_horaria') {
-    // Simplificación: asume distribución P1 40% / P2 40% / P3 20% del consumo
-    // Para mayor precisión Borja puede ajustar porcentajes en constants.js
-    const kwh_p1 = kwh_total * 0.40;
-    const kwh_p2 = kwh_total * 0.40;
-    const kwh_p3 = kwh_total * 0.20;
+  if (tarifa.tipo === 'discriminacion_horaria') {
+    // Usar kWh por período de la factura si están disponibles; si no, distribución estándar 2.0TD
+    const tieneDesglose = (bill.kwh_p1 || 0) + (bill.kwh_p2 || 0) + (bill.kwh_p3 || 0) > 0;
+    const p1 = tieneDesglose ? (bill.kwh_p1 || 0) : kwh_total * 0.30;
+    const p2 = tieneDesglose ? (bill.kwh_p2 || 0) : kwh_total * 0.45;
+    const p3 = tieneDesglose ? (bill.kwh_p3 || 0) : kwh_total * 0.25;
     coste_energia =
-      kwh_p1 * (tarifa.precios.kwh_p1 || 0) +
-      kwh_p2 * (tarifa.precios.kwh_p2 || 0) +
-      kwh_p3 * (tarifa.precios.kwh_p3 || 0);
+      p1 * (tarifa.precios.kwh_p1 || 0) +
+      p2 * (tarifa.precios.kwh_p2 || 0) +
+      p3 * (tarifa.precios.kwh_p3 || 0);
   } else {
     // fijo — mismo precio para todos los kWh
     coste_energia = kwh_total * (tarifa.precios.kwh || 0);
   }
 
-  coste_potencia =
-    ((potencia_p1_kw || 0) * (tarifa.precios.potencia_p1_kw_dia || 0) +
-     (potencia_p2_kw || 0) * (tarifa.precios.potencia_p2_kw_dia || 0)) * dias;
+  // Potencia: soporta tarifa con un único precio por kW/día (aplicado a P1+P2)
+  // o con precios separados potencia_p1_kw_dia / potencia_p2_kw_dia
+  if (tarifa.precios.potencia_kw_dia != null) {
+    coste_potencia = ((potencia_p1_kw || 0) + (potencia_p2_kw || 0)) *
+      tarifa.precios.potencia_kw_dia * dias;
+  } else {
+    coste_potencia =
+      ((potencia_p1_kw || 0) * (tarifa.precios.potencia_p1_kw_dia || 0) +
+       (potencia_p2_kw || 0) * (tarifa.precios.potencia_p2_kw_dia || 0)) * dias;
+  }
 
   // Con nuestras comercializadoras no hay servicios adicionales
   const otros_conceptos = 0;
@@ -84,7 +88,15 @@ function proyectarAnual(bill, ahorro_periodo) {
  * commissions = { tarifa_id: comision_eur_anual | null }
  */
 function calculateBest(bill, commissions = {}) {
-  const activas = tarifasData.tarifas.filter(t => t.activa);
+  // Calcular kwh_anual para filtrar tarifas con límites de consumo
+  const kwh_anual_cliente = round2((bill.kwh_total / bill.dias) * 365);
+
+  const activas = tarifasData.tarifas.filter(t => {
+    if (!t.activa) return false;
+    if (t.kwh_anual_min != null && kwh_anual_cliente < t.kwh_anual_min) return false;
+    if (t.kwh_anual_max != null && kwh_anual_cliente > t.kwh_anual_max) return false;
+    return true;
+  });
 
   if (activas.length === 0) {
     throw new Error(

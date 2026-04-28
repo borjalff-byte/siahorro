@@ -17,6 +17,9 @@ Formato exacto requerido:
   "potencia_p1_kw": número decimal (potencia contratada P1 en kW),
   "potencia_p2_kw": número decimal (potencia contratada P2 en kW),
   "kwh_total": número decimal (kWh totales consumidos en el período),
+  "kwh_p1": número decimal (kWh consumidos en período P1, punta — 0 si no aparece desglosado),
+  "kwh_p2": número decimal (kWh consumidos en período P2, llano — 0 si no aparece desglosado),
+  "kwh_p3": número decimal (kWh consumidos en período P3, valle — 0 si no aparece desglosado),
   "coste_potencia": número decimal (importe total del término de potencia en €),
   "coste_energia": número decimal (importe total del término de energía activa en €),
   "e_reactiva": número decimal (importe energía reactiva en €, 0 si no aparece),
@@ -73,7 +76,8 @@ function validateAndNormalize(data) {
   const numericFields = [
     'dias', 'kwh_total', 'total', 'coste_potencia', 'coste_energia',
     'e_reactiva', 'excesos_pot', 'impuesto_electrico', 'otros_conceptos', 'iva',
-    'potencia_p1_kw', 'potencia_p2_kw'
+    'potencia_p1_kw', 'potencia_p2_kw',
+    'kwh_p1', 'kwh_p2', 'kwh_p3'
   ];
   numericFields.forEach(f => {
     data[f] = data[f] != null && data[f] !== '' ? Number(data[f]) : 0;
