@@ -1,3 +1,7 @@
 .vercel
 node_modules/
 .claude/
+.env.local
+.env
+bot/scripts/commission-docs/
+test-*.pdf

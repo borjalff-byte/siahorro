@@ -1,0 +1,109 @@
+{
+  "_aviso": "⚠️ PRECIOS PLACEHOLDER — confirmar con contratos comerciales reales antes de usar en producción",
+  "version": "2026-04",
+  "pvpc_media_12m": 0.1250,
+  "tarifas": [
+    {
+      "id": "ides_indexada",
+      "comercializadora": "Ides Energía",
+      "nombre": "Indexada",
+      "tipo": "indexada",
+      "logo": "ides.png",
+      "precios": {
+        "spread_kwh": 0.004,
+        "potencia_p1_kw_dia": 0.08428,
+        "potencia_p2_kw_dia": 0.04214
+      },
+      "activa": true,
+      "_nota": "Spread sobre PVPC. Precios potencia aproximados — confirmar con contrato Ides"
+    },
+    {
+      "id": "neon_fijo",
+      "comercializadora": "Neon",
+      "nombre": "Tarifa Fija",
+      "tipo": "fijo",
+      "logo": "neon.png",
+      "precios": {
+        "kwh": null,
+        "potencia_p1_kw_dia": null,
+        "potencia_p2_kw_dia": null
+      },
+      "activa": false,
+      "_nota": "Pendiente de precios reales de contrato Neon"
+    },
+    {
+      "id": "neon_indexada",
+      "comercializadora": "Neon",
+      "nombre": "Indexada",
+      "tipo": "indexada",
+      "logo": "neon.png",
+      "precios": {
+        "spread_kwh": null,
+        "potencia_p1_kw_dia": null,
+        "potencia_p2_kw_dia": null
+      },
+      "activa": false,
+      "_nota": "Pendiente de precios reales de contrato Neon indexada"
+    },
+    {
+      "id": "gana_fijo_24h",
+      "comercializadora": "Gana Energía",
+      "nombre": "Fija 24h",
+      "tipo": "fijo",
+      "logo": "gana.png",
+      "precios": {
+        "kwh": null,
+        "potencia_p1_kw_dia": null,
+        "potencia_p2_kw_dia": null
+      },
+      "activa": false,
+      "_nota": "Pendiente de precios reales de contrato Gana"
+    },
+    {
+      "id": "gana_tramos",
+      "comercializadora": "Gana Energía",
+      "nombre": "Tramos Horarios",
+      "tipo": "discriminacion_horaria",
+      "logo": "gana.png",
+      "precios": {
+        "kwh_p1": null,
+        "kwh_p2": null,
+        "kwh_p3": null,
+        "potencia_p1_kw_dia": null,
+        "potencia_p2_kw_dia": null
+      },
+      "activa": false,
+      "_nota": "Tarifa con discriminación horaria P1/P2/P3. Pendiente de precios reales"
+    },
+    {
+      "id": "niba_fijo_24h",
+      "comercializadora": "Niba",
+      "nombre": "Fija 24h",
+      "tipo": "fijo",
+      "logo": "niba.png",
+      "precios": {
+        "kwh": null,
+        "potencia_p1_kw_dia": null,
+        "potencia_p2_kw_dia": null
+      },
+      "activa": false,
+      "_nota": "Pendiente de precios reales de contrato Niba"
+    },
+    {
+      "id": "niba_tramos",
+      "comercializadora": "Niba",
+      "nombre": "Tramos Horarios",
+      "tipo": "discriminacion_horaria",
+      "logo": "niba.png",
+      "precios": {
+        "kwh_p1": null,
+        "kwh_p2": null,
+        "kwh_p3": null,
+        "potencia_p1_kw_dia": null,
+        "potencia_p2_kw_dia": null
+      },
+      "activa": false,
+      "_nota": "Tarifa con discriminación horaria. Pendiente de precios reales"
+    }
+  ]
+}
