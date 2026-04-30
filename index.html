@@ -36,7 +36,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -54,7 +54,7 @@
         }
 
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
         /* ═══ NAVBAR ═══ */
         nav {
@@ -181,7 +181,7 @@
         .section-tag { display: inline-flex; align-items: center; gap: 10px; color: var(--orange); font-size: .88rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 18px; }
         .section-tag::before { content: ''; display: inline-block; width: 24px; height: 2px; background: var(--orange); border-radius: 2px; flex-shrink: 0; }
         .section-title { font-size: clamp(2.5rem, 5.5vw, 4rem); font-weight: 900; line-height: 1.1; letter-spacing: -1px; margin-bottom: 18px; }
-        .section-sub { color: var(--t60); font-size: .99rem; line-height: 1.76; font-weight: 300; }
+        .section-sub { color: var(--t60); font-size: 1.07rem; line-height: 1.8; font-weight: 400; }
         .section-header { text-align: center; margin-bottom: 72px; }
         .section-header .section-sub { max-width: 480px; margin: 0 auto; }
 
@@ -199,7 +199,7 @@
         .srv-title { font-size: 1.05rem; font-weight: 800; }
         .srv-price { font-size: 2rem; font-weight: 900; line-height: 1; background: linear-gradient(to right, var(--orange), #FDBA74); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 4px; }
         .srv-price-unit { font-size: .78rem; color: var(--t35); font-weight: 500; margin-bottom: 16px; }
-        .srv-desc { font-size: .87rem; color: var(--t60); line-height: 1.72; font-weight: 300; margin-bottom: 24px; flex: 1; }
+        .srv-desc { font-size: .93rem; color: var(--t60); line-height: 1.78; font-weight: 400; margin-bottom: 24px; flex: 1; }
         .srv-divider { height: 1px; background: var(--gb); margin-bottom: 20px; }
         .srv-features { list-style: none; display: flex; flex-direction: column; gap: 10px; }
         .srv-features li { display: flex; align-items: center; gap: 10px; font-size: .84rem; color: var(--t60); }
@@ -261,11 +261,11 @@
         @keyframes panelEnterLeft { from { opacity:0; transform:translateX(-55px); } to { opacity:1; transform:translateX(0); } }
         @keyframes panelExitRight { from { opacity:1; transform:translateX(0); }  to { opacity:0; transform:translateX(55px); } }
 
-        .comp-step-title { font-size: 1.3rem; font-weight: 800; color: #1C1917; margin-bottom: 28px; text-align: center; }
+        .comp-step-title { font-size: 1.42rem; font-weight: 800; color: #1C1917; margin-bottom: 28px; text-align: center; }
 
         /* Tarjetas de tipo */
         .type-cards { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
-        .type-card { flex: 1; min-width: 130px; max-width: 180px; padding: 22px 14px 18px; border-radius: 18px; border: 2px solid rgba(249,115,22,.15); background: #FAFAF9; cursor: pointer; text-align: center; transition: all .22s; font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .type-card { flex: 1; min-width: 130px; max-width: 180px; padding: 22px 14px 18px; border-radius: 18px; border: 2px solid rgba(249,115,22,.15); background: #FAFAF9; cursor: pointer; text-align: center; transition: all .22s; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .type-card:hover { border-color: rgba(249,115,22,.4); background: #FFF7ED; transform: translateY(-3px); box-shadow: 0 8px 24px rgba(249,115,22,.12); }
         .type-card.selected { border-color: var(--orange); background: rgba(249,115,22,.07); transform: scale(1.04) translateY(-3px); box-shadow: 0 10px 30px rgba(249,115,22,.2); }
         .type-card-icon { width: 56px; height: 56px; background: rgba(249,115,22,.1); border: 1px solid rgba(249,115,22,.22); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--orange); transition: background .22s; }
@@ -274,23 +274,23 @@
         .type-card-desc { font-size: .76rem; color: #78716C; font-weight: 400; line-height: 1.4; }
 
         /* Upload zona (paso 2) */
-        .upload-zone { border: 2px dashed rgba(249,115,22,.25); border-radius: 16px; padding: 32px 24px; text-align: center; cursor: pointer; transition: all .2s; position: relative; background: #FAFAF9; margin-bottom: 8px; }
-        .upload-zone:hover, .upload-zone.over { border-color: var(--orange); background: #FFF7ED; }
+        .upload-zone { border: 2px dashed rgba(249,115,22,.3); border-radius: 16px; padding: 36px 24px; text-align: center; cursor: pointer; transition: all .25s; position: relative; background: #FAFAF9; margin-bottom: 8px; }
+        .upload-zone:hover, .upload-zone.over { border-color: var(--orange); background: #FFF7ED; box-shadow: 0 0 0 4px rgba(249,115,22,.08); }
         .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
         .upload-icon { display: flex; justify-content: center; margin-bottom: 10px; color: #A8A29E; }
         .upload-hint { font-size: .85rem; color: #78716C; line-height: 1.6; }
         .upload-hint strong { color: var(--orange); }
         .upload-fname { display: none; margin-top: 10px; font-size: .82rem; color: var(--orange); font-weight: 600; }
-        .link-manual { display: block; text-align: center; margin-top: 14px; font-size: .82rem; color: #A8A29E; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; transition: color .2s; background: none; border: none; font-family: inherit; width: 100%; }
+        .link-manual { display: block; text-align: center; margin-top: 14px; font-size: .82rem; color: #A8A29E; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; transition: color .2s; background: none; border: none; font-family: 'Plus Jakarta Sans', sans-serif; width: 100%; }
         .link-manual:hover { color: var(--orange); }
 
         /* Input manual (alternativa) */
         .manual-wrap { display: none; text-align: center; padding-top: 4px; }
         .manual-wrap.visible { display: block; }
         .amount-input-wrap { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px; margin-top: 8px; }
-        .amount-input-big { font-size: 2.2rem; font-weight: 900; color: #1C1917; background: #FAFAF9; border: 2px solid #E7E5E4; border-radius: 16px; padding: 14px 20px; width: 180px; text-align: center; font-family: inherit; outline: none; transition: border-color .2s; -moz-appearance: textfield; appearance: textfield; }
+        .amount-input-big { font-size: 2.2rem; font-weight: 900; color: #1C1917; background: #FAFAF9; border: 2px solid #E7E5E4; border-radius: 16px; padding: 14px 20px; width: 180px; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif; outline: none; transition: border-color .2s, box-shadow .2s; -moz-appearance: textfield; appearance: textfield; }
         .amount-input-big::-webkit-outer-spin-button, .amount-input-big::-webkit-inner-spin-button { -webkit-appearance: none; }
-        .amount-input-big:focus { border-color: var(--orange); background: #FFF7ED; }
+        .amount-input-big:focus { border-color: var(--orange); background: #FFF7ED; box-shadow: 0 0 0 3px rgba(249,115,22,.12); }
         .amount-input-big.error { border-color: #EF4444; animation: shake .35s ease; }
         @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);} }
         .amount-currency { font-size: 2.2rem; font-weight: 900; color: var(--orange); user-select: none; }
@@ -308,10 +308,10 @@
         /* Botones de navegación */
         .comp-step-actions { display: flex; justify-content: flex-end; margin-top: 4px; }
         .comp-step-actions--two { justify-content: space-between; }
-        .btn-step-next { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--orange), var(--orange-dk)); color: #fff; border: none; padding: 13px 28px; border-radius: 12px; font-size: .93rem; font-weight: 700; font-family: inherit; cursor: pointer; transition: all .22s; }
+        .btn-step-next { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--orange), var(--orange-dk)); color: #fff; border: none; padding: 13px 28px; border-radius: 12px; font-size: .93rem; font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; transition: all .22s; }
         .btn-step-next:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(249,115,22,.4); }
         .btn-step-next:disabled { opacity: .35; cursor: not-allowed; }
-        .btn-step-back { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #78716C; border: 1px solid #E7E5E4; padding: 13px 22px; border-radius: 12px; font-size: .93rem; font-weight: 600; font-family: inherit; cursor: pointer; transition: all .22s; }
+        .btn-step-back { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #78716C; border: 1px solid #E7E5E4; padding: 13px 22px; border-radius: 12px; font-size: .93rem; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer; transition: all .22s; }
         .btn-step-back:hover { border-color: rgba(249,115,22,.35); color: var(--orange); background: rgba(249,115,22,.05); }
 
         /* Resultado (paso 3) */
@@ -333,7 +333,7 @@
         .result-anual-box strong { color: var(--orange); font-size: 1.05rem; }
         .btn-wa-res { display: flex; align-items: center; justify-content: center; gap: 9px; background: linear-gradient(135deg, var(--orange), var(--orange-dk)); color: #fff; padding: 15px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: .95rem; transition: all .2s; }
         .btn-wa-res:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(249,115,22,.42); }
-        .btn-recalcular { display: flex; align-items: center; justify-content: center; gap: 7px; background: transparent; border: none; color: #A8A29E; font-size: .82rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: color .2s; width: 100%; padding: 4px; }
+        .btn-recalcular { display: flex; align-items: center; justify-content: center; gap: 7px; background: transparent; border: none; color: #A8A29E; font-size: .82rem; font-weight: 600; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; transition: color .2s; width: 100%; padding: 4px; }
         .btn-recalcular:hover { color: var(--orange); }
         .result-disclaimer { font-size: .71rem; color: #A8A29E; text-align: center; line-height: 1.55; padding: 0 4px; }
 
@@ -365,8 +365,8 @@
         .benefit { background: var(--glass); border: 1px solid var(--gb); border-radius: 20px; padding: 28px; display: flex; gap: 18px; align-items: flex-start; transition: all .22s; }
         .benefit:hover { border-color: rgba(249,115,22,.25); transform: translateY(-4px); background: rgba(255,255,255,.055); }
         .ben-icon { width: 52px; height: 52px; background: rgba(249,115,22,.1); border: 1px solid rgba(249,115,22,.25); border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--orange); }
-        .ben-text h4 { font-weight: 700; font-size: .95rem; margin-bottom: 7px; }
-        .ben-text p { font-size: .84rem; color: var(--t60); line-height: 1.68; font-weight: 300; }
+        .ben-text h4 { font-weight: 700; font-size: 1rem; margin-bottom: 7px; }
+        .ben-text p { font-size: .91rem; color: var(--t60); line-height: 1.72; font-weight: 400; }
 
         /* ═══ TESTIMONIOS — scroll horizontal ═══ */
         .testimonios { padding: 120px 24px; background: var(--bg); border-top: 1px solid var(--gb); position: relative; }
@@ -399,10 +399,10 @@
         .faq-list { max-width: 780px; margin: 60px auto 0; display: flex; flex-direction: column; gap: 12px; }
         .faq-item { background: var(--glass); border: 1px solid var(--gb); border-radius: 16px; overflow: hidden; transition: border-color .2s; }
         .faq-item.open { border-color: rgba(249,115,22,.3); }
-        .faq-q { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 28px; cursor: pointer; font-weight: 600; font-size: .95rem; line-height: 1.4; user-select: none; }
+        .faq-q { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 28px; cursor: pointer; font-weight: 600; font-size: 1.02rem; line-height: 1.4; user-select: none; }
         .faq-q svg { flex-shrink: 0; color: var(--orange); transition: transform .3s; }
         .faq-item.open .faq-q svg { transform: rotate(45deg); }
-        .faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .35s; padding: 0 28px; font-size: .88rem; color: var(--t60); line-height: 1.75; font-weight: 300; }
+        .faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .35s; padding: 0 28px; font-size: .94rem; color: var(--t60); line-height: 1.8; font-weight: 400; }
         .faq-item.open .faq-a { max-height: 300px; padding: 0 28px 22px; }
 
         /* ═══ MODAL AVISO LEGAL ═══ */
@@ -543,8 +543,17 @@
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
         .form-group label { font-size: .82rem; font-weight: 600; color: var(--t60); letter-spacing: .3px; }
-        .form-input { background: rgba(255,255,255,.05); border: 1px solid var(--gb); border-radius: 10px; padding: 13px 16px; color: var(--text); font-family: 'Inter', sans-serif; font-size: .92rem; transition: border-color .2s; outline: none; }
-        .form-input:focus { border-color: var(--orange); }
+        .form-input {
+            background: rgba(255,255,255,.05); border: 1.5px solid var(--gb); border-radius: 12px;
+            padding: 14px 16px; color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: .97rem; transition: border-color .2s, box-shadow .2s, background .2s; outline: none;
+        }
+        .form-input:hover { border-color: rgba(255,255,255,.15); }
+        .form-input:focus {
+            border-color: var(--orange);
+            background: rgba(249,115,22,.04);
+            box-shadow: 0 0 0 3px rgba(249,115,22,.12);
+        }
         .form-input::placeholder { color: var(--t35); }
         textarea.form-input { resize: vertical; min-height: 120px; }
         .form-submit { width: 100%; background: linear-gradient(135deg, var(--orange), var(--orange-dk)); color: #fff; border: none; border-radius: 50px; padding: 15px; font-weight: 700; font-size: .96rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all .22s; margin-top: 8px; }
@@ -557,13 +566,54 @@
         .tarifa-blur { filter: blur(6px); user-select: none; pointer-events: none; display: inline-block; }
         .lead-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
         .lead-fields input:first-child { grid-column: 1 / -1; }
-        .lead-fields .form-input { background: #fff; color: #1c1917; border-color: #d4cfc9; }
-        .lead-fields .form-input::placeholder { color: #a8a29e; }
-        .lead-fields .form-input:focus { border-color: var(--orange); }
+        .lead-fields .form-input {
+            background: #fff;
+            color: #1c1917;
+            border: 1.5px solid #E2DDD8;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: .97rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: border-color .2s, box-shadow .2s, background .2s;
+            outline: none;
+        }
+        .lead-fields .form-input::placeholder { color: #b8b1aa; }
+        .lead-fields .form-input:hover { border-color: #C8C0B8; }
+        .lead-fields .form-input:focus {
+            border-color: var(--orange);
+            background: #FFF9F5;
+            box-shadow: 0 0 0 3px rgba(249,115,22,.12), 0 2px 8px rgba(249,115,22,.08);
+        }
         .form-input.error-field { border-color: #f87171 !important; }
-        .lead-error { font-size: .8rem; color: #f87171; display: none; margin-top: -4px; margin-bottom: 4px; }
-        .rgpd-check-label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: .83rem; color: var(--t60); line-height: 1.5; }
-        .rgpd-check-label input[type=checkbox] { accent-color: var(--orange); width: 16px; height: 16px; min-width: 16px; margin-top: 2px; cursor: pointer; }
+        .lead-error { font-size: .82rem; color: #f87171; display: none; margin-top: -4px; margin-bottom: 4px; }
+
+        /* Checkbox privacidad personalizado */
+        .rgpd-check-label {
+            display: flex; align-items: center; gap: 12px; cursor: pointer;
+            font-size: .88rem; color: #78716C; line-height: 1.5;
+            padding: 10px 14px; border-radius: 10px;
+            border: 1.5px solid #E2DDD8;
+            background: #FAFAF9;
+            transition: border-color .2s, background .2s;
+        }
+        .rgpd-check-label:hover { border-color: rgba(249,115,22,.35); background: #FFF7ED; }
+        .rgpd-check-label input[type=checkbox] { display: none; }
+        .rgpd-check-label .custom-check {
+            width: 20px; height: 20px; min-width: 20px; border-radius: 6px;
+            border: 2px solid #D6D0CA; background: #fff;
+            display: flex; align-items: center; justify-content: center;
+            transition: all .18s; flex-shrink: 0;
+        }
+        .rgpd-check-label input[type=checkbox]:checked ~ .custom-check {
+            background: var(--orange); border-color: var(--orange);
+        }
+        .rgpd-check-label input[type=checkbox]:checked ~ .custom-check::after {
+            content: '';
+            display: block; width: 5px; height: 9px;
+            border: 2px solid #fff; border-top: none; border-left: none;
+            transform: rotate(45deg) translate(-1px, -1px);
+        }
+        .rgpd-check-label.checked { border-color: rgba(249,115,22,.4); background: #FFF7ED; }
         .comp-email-wrap { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
         .comp-email-wrap .form-input { width: 100%; box-sizing: border-box; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -925,9 +975,10 @@
                 <div class="amount-context-label" id="amountLabel">Mueve el slider o escribe tu importe mensual</div>
             </div>
             <div class="form-group" style="margin-top:12px">
-                <label class="rgpd-check-label">
+                <label class="rgpd-check-label" id="rgpdLabel">
                     <input type="checkbox" id="lead-consent">
-                    <span>Acepto la <a href="#" onclick="document.getElementById('modalPrivacidad').classList.add('open');return false;" style="color:var(--orange);text-decoration:none">política de privacidad</a></span>
+                    <span class="custom-check"></span>
+                    <span>Acepto la <a href="#" onclick="document.getElementById('modalPrivacidad').classList.add('open');return false;" style="color:var(--orange);text-decoration:none;font-weight:600">política de privacidad</a></span>
                 </label>
             </div>
             <div class="comp-step-actions comp-step-actions--two" style="margin-top:12px;">
@@ -1169,9 +1220,10 @@
                 <textarea id="cf-mensaje" class="form-input" placeholder="Cuéntanos en qué podemos ayudarte..."></textarea>
             </div>
             <div class="form-group" style="margin-top:4px">
-                <label class="rgpd-check-label">
+                <label class="rgpd-check-label" id="rgpdLabelCf">
                     <input type="checkbox" id="cf-consentimiento" required>
-                    <span>He leído y acepto la <a href="#" onclick="document.getElementById('modalPrivacidad').classList.add('open');return false;" style="color:var(--orange);text-decoration:none">política de privacidad</a></span>
+                    <span class="custom-check"></span>
+                    <span>He leído y acepto la <a href="#" onclick="document.getElementById('modalPrivacidad').classList.add('open');return false;" style="color:var(--orange);text-decoration:none;font-weight:600">política de privacidad</a></span>
                 </label>
             </div>
             <button type="submit" class="form-submit" id="formSubmit">
@@ -1382,7 +1434,10 @@
 
     // ── PASO 2: Upload + manual ───────────────────────────────────────
     fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
-    leadConsent?.addEventListener('change', checkStep2Ready);
+    leadConsent?.addEventListener('change', () => {
+        checkStep2Ready();
+        document.getElementById('rgpdLabel')?.classList.toggle('checked', leadConsent.checked);
+    });
     [leadNombre, leadEmail, leadTelefono].forEach(el => el?.addEventListener('input', () => {
         if (leadError) leadError.style.display = 'none';
         el.classList.remove('error-field');
@@ -1818,6 +1873,11 @@
     // Cerrar modales al clic fuera
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+    });
+
+    // Checkbox privacidad del formulario de contacto
+    document.getElementById('cf-consentimiento')?.addEventListener('change', function() {
+        document.getElementById('rgpdLabelCf')?.classList.toggle('checked', this.checked);
     });
 
     // Formulario de contacto
