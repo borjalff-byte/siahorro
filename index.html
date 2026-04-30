@@ -128,7 +128,7 @@
         .shape-5 { --r:-25deg; width:150px; height:40px; left:22%; top:7%; background:linear-gradient(to right,rgba(255,237,213,.12),transparent); animation:shapeIn 2.4s cubic-bezier(.23,.86,.39,.96) .7s both,floatY 11s ease-in-out 3.1s infinite; }
 
         .hero-fade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,11,9,.65) 0%, transparent 18%, transparent 82%, rgba(13,11,9,.85) 100%); pointer-events: none; z-index: 4; }
-        .hero-content { position: relative; z-index: 10; max-width: 860px; width: 100%; }
+        .hero-content { position: relative; z-index: 10; max-width: 860px; width: 100%; padding: 0 16px; }
 
         @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -140,7 +140,7 @@
             margin-bottom: 40px; animation: fadeUp 1s ease .5s both;
         }
         .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 8px var(--orange); flex-shrink: 0; }
-        .hero h1 { font-size: clamp(2.8rem, 7.5vw, 5.4rem); font-weight: 900; line-height: 1.05; letter-spacing: -2px; margin-bottom: 28px; animation: fadeUp 1s ease .7s both; }
+        .hero h1 { font-size: clamp(2.4rem, 6.5vw, 5rem); font-weight: 900; line-height: 1.08; letter-spacing: -1px; margin-bottom: 28px; animation: fadeUp 1s ease .7s both; overflow-wrap: break-word; }
         .hero h1 .l1 { display: block; background: linear-gradient(to bottom, #fff, rgba(255,255,255,.78)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .hero h1 .l2 { display: block; background: linear-gradient(to right, #FDBA74, var(--orange), #C2410C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .hero p { font-size: clamp(.98rem, 2.2vw, 1.18rem); color: var(--t60); max-width: 540px; margin: 0 auto 46px; line-height: 1.78; font-weight: 300; animation: fadeUp 1s ease .9s both; }
