@@ -115,8 +115,7 @@
             pointer-events: none; z-index: 1;
         }
         #heroCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
-        .shapes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; }
-        .shape { position: absolute; border-radius: 9999px; border: 1.5px solid rgba(255,255,255,0.12); }
+        .shapes { display: none; }
         .shape::after { content: ''; position: absolute; inset: 0; border-radius: 9999px; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.16), transparent 68%); }
 
         @keyframes shapeIn { from { opacity: 0; transform: translateY(-140px) rotate(calc(var(--r) - 15deg)); } to { opacity: 1; transform: translateY(0) rotate(var(--r)); } }
