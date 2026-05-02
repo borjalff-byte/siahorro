@@ -115,7 +115,8 @@
             pointer-events: none; z-index: 1;
         }
         #heroCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
-        .shapes { display: none; }
+        .shapes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; }
+        .shape { position: absolute; border-radius: 9999px; border: 1.5px solid rgba(255,255,255,0.12); }
         .shape::after { content: ''; position: absolute; inset: 0; border-radius: 9999px; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.16), transparent 68%); }
 
         @keyframes shapeIn { from { opacity: 0; transform: translateY(-140px) rotate(calc(var(--r) - 15deg)); } to { opacity: 1; transform: translateY(0) rotate(var(--r)); } }
@@ -140,7 +141,7 @@
             margin-bottom: 40px; animation: fadeUp 1s ease .5s both;
         }
         .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 8px var(--orange); flex-shrink: 0; }
-        .hero h1 { font-size: clamp(2rem, 5.5vw, 4.6rem); font-weight: 900; line-height: 1.1; letter-spacing: -.5px; margin-bottom: 28px; animation: fadeUp 1s ease .7s both; word-break: break-word; overflow-wrap: break-word; }
+        .hero h1 { font-size: clamp(1.8rem, 4.2vw, 4.4rem); font-weight: 900; line-height: 1.1; letter-spacing: -.5px; margin-bottom: 28px; animation: fadeUp 1s ease .7s both; word-break: break-word; overflow-wrap: break-word; }
         .hero h1 .l1 { display: block; background: linear-gradient(to bottom, #fff, rgba(255,255,255,.78)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .hero h1 .l2 { display: block; background: linear-gradient(to right, #FDBA74, var(--orange), #C2410C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .hero p { font-size: clamp(.98rem, 2.2vw, 1.18rem); color: var(--t60); max-width: 540px; margin: 0 auto 46px; line-height: 1.78; font-weight: 300; animation: fadeUp 1s ease .9s both; }
