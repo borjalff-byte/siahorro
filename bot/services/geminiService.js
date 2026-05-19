@@ -20,8 +20,8 @@ Formato exacto requerido:
   "kwh_p1": número decimal (kWh consumidos en período P1, punta — 0 si no aparece desglosado),
   "kwh_p2": número decimal (kWh consumidos en período P2, llano — 0 si no aparece desglosado),
   "kwh_p3": número decimal (kWh consumidos en período P3, valle — 0 si no aparece desglosado),
-  "coste_potencia": número decimal (importe total del término de potencia en €),
-  "coste_energia": número decimal (importe total del término de energía activa en €),
+  "coste_potencia": número decimal (importe TOTAL del término de POTENCIA CONTRATADA en €, es la línea en negrita "Potencia" con su subtotal — NO confundir con Energía Activa),
+  "coste_energia": número decimal (importe TOTAL del término de ENERGÍA ACTIVA en €, es la línea en negrita "Energía Activa" con su subtotal — NO confundir con Potencia),
   "e_reactiva": número decimal (importe energía reactiva en €, 0 si no aparece),
   "excesos_pot": número decimal (importe excesos de potencia en €, 0 si no aparece),
   "impuesto_electrico": número decimal (importe IEE impuesto especial electricidad en €),
@@ -35,7 +35,9 @@ IMPORTANTE:
 - Si un campo numérico no aparece en la factura, usa 0 (no null)
 - Si un campo de texto no aparece, usa null
 - Los importes deben ser positivos
-- "otros_conceptos" incluye cualquier servicio adicional contratado (seguros, mantenimiento, etc.)`;
+- "otros_conceptos" incluye cualquier servicio adicional contratado (seguros, mantenimiento, etc.)
+- "coste_potencia" y "coste_energia" son SIEMPRE valores distintos entre sí. Si te salen iguales, has cometido un error — revisa la factura.
+- En facturas con desglose por períodos (Punta/Llano/Valle), extrae el SUBTOTAL de cada sección principal, no el de un subperiodo individual.`;
 
 function withTimeout(promise, ms, label) {
   return Promise.race([

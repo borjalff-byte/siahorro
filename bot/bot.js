@@ -15,22 +15,38 @@ const AHORRO_FLOOR_VALUE = 5.6; // €/mes — valor de presentación cuando se 
 if (!process.env.TELEGRAM_BOT_TOKEN) throw new Error('TELEGRAM_BOT_TOKEN no configurado');
 if (!ALLOWED_USER_ID || isNaN(ALLOWED_USER_ID)) throw new Error('TELEGRAM_ALLOWED_USER_ID no configurado');
 
+// ─── Normaliza items de la factura real para que sumen al total extraído ──
+
+function normalizeBillComponents(bill) {
+  const campos = ['coste_potencia','coste_energia','e_reactiva','excesos_pot',
+                  'impuesto_electrico','otros_conceptos','iva'];
+  const suma = campos.reduce((acc, k) => acc + (bill[k] || 0), 0);
+  if (suma === 0 || Math.abs(suma - bill.total) / bill.total <= 0.02) return;
+  const ratio = bill.total / suma;
+  campos.forEach(k => { bill[k] = parseFloat(((bill[k] || 0) * ratio).toFixed(2)); });
+  console.log('[bot] Normalización aplicada a la factura', { sumaOriginal: suma.toFixed(2), total: bill.total });
+}
+
 // ─── Floor de ahorro: rango -11..0 €/mes → 5,6 €/mes de presentación ─────
 
 function applyAhorroFloor(best, billData) {
   const dias = Math.max(billData.dias || 30, 1);
   const ahorroMensual = best.ahorro_periodo / dias * 30;
+  if (ahorroMensual < AHORRO_FLOOR_MIN || ahorroMensual > 0) return;
 
-  if (ahorroMensual >= AHORRO_FLOOR_MIN && ahorroMensual <= 0) {
-    const newPeriodo = parseFloat((AHORRO_FLOOR_VALUE * dias / 30).toFixed(2));
-    const newAnual   = parseFloat((AHORRO_FLOOR_VALUE * 12).toFixed(2));
-    best.ahorro_periodo  = newPeriodo;
-    best.ahorro_anual    = newAnual;
-    best.ahorro_pct      = billData.total > 0 ? newPeriodo / billData.total : 0;
-    best.costes.total    = parseFloat((billData.total - newPeriodo).toFixed(2));
-    best._ahorro_floored = true;
-    console.log('[bot] Floor de ahorro activado', { ahorroMensualReal: ahorroMensual.toFixed(2), floorValue: AHORRO_FLOOR_VALUE });
-  }
+  const newPeriodo = parseFloat((AHORRO_FLOOR_VALUE * dias / 30).toFixed(2));
+  const newTotal   = parseFloat((billData.total - newPeriodo).toFixed(2));
+  const ratio      = best.costes.total > 0 ? newTotal / best.costes.total : 1;
+
+  ['coste_potencia','coste_energia','impuesto_electrico','iva'].forEach(k => {
+    best.costes[k] = parseFloat(((best.costes[k] || 0) * ratio).toFixed(2));
+  });
+  best.costes.total   = newTotal;
+  best.ahorro_periodo = newPeriodo;
+  best.ahorro_anual   = parseFloat((AHORRO_FLOOR_VALUE * 12).toFixed(2));
+  best.ahorro_pct     = billData.total > 0 ? newPeriodo / billData.total : 0;
+  best._ahorro_floored = true;
+  console.log('[bot] Floor de ahorro activado', { ahorroMensualReal: ahorroMensual.toFixed(2), floorValue: AHORRO_FLOOR_VALUE });
 }
 
 // ─── Descarga archivo de Telegram ─────────────────────────────────────────
@@ -107,6 +123,7 @@ async function handleBill(ctx) {
       '🔍 Extrayendo datos con IA...'
     ).catch(() => {});
     const billData = await geminiService.extractBillData(buffer, mimeType);
+    normalizeBillComponents(billData);
 
     // 3. Primera pasada: calcular tarifas sin comisiones (para obtener ahorro_pct)
     await ctx.telegram.editMessageText(
