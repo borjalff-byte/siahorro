@@ -39,8 +39,8 @@ function calcularCoste(tarifa, bill) {
   // Potencia: soporta tarifa con un único precio por kW/día (aplicado a P1+P2)
   // o con precios separados potencia_p1_kw_dia / potencia_p2_kw_dia
   if (tarifa.precios.potencia_kw_dia != null) {
-    coste_potencia = ((potencia_p1_kw || 0) + (potencia_p2_kw || 0)) *
-      tarifa.precios.potencia_kw_dia * dias;
+    const kw = potencia_p1_kw || potencia_p2_kw || 0;
+    coste_potencia = kw * tarifa.precios.potencia_kw_dia * dias;
   } else {
     coste_potencia =
       ((potencia_p1_kw || 0) * (tarifa.precios.potencia_p1_kw_dia || 0) +

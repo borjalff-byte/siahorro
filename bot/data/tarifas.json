@@ -1,5 +1,5 @@
 {
-  "version": "2026-04",
+  "version": "2026-05",
   "pvpc_media_12m": 0.1250,
   "tarifas": [
     {
@@ -37,7 +37,7 @@
       "logo": "neon.png",
       "precios": {
         "potencia_kw_dia": 0.17786,
-        "kwh": 0.118103
+        "kwh": 0.115604
       },
       "kwh_anual_max": 5000,
       "activa": true
@@ -50,7 +50,7 @@
       "logo": "neon.png",
       "precios": {
         "potencia_kw_dia": 0.17786,
-        "kwh": 0.136103
+        "kwh": 0.142672
       },
       "kwh_anual_min": 5001,
       "kwh_anual_max": 10000,
@@ -115,10 +115,10 @@
       "tipo": "discriminacion_horaria",
       "logo": "niba.png",
       "precios": {
-        "potencia_kw_dia": 0.178,
-        "kwh_p1": 0.198,
-        "kwh_p2": 0.119,
-        "kwh_p3": 0.082
+        "potencia_kw_dia": 0.138,
+        "kwh_p1": 0.196,
+        "kwh_p2": 0.169,
+        "kwh_p3": 0.089
       },
       "activa": true
     }

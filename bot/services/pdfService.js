@@ -47,14 +47,14 @@ function renderCover(doc, billData, bestResult) {
   // Fondo blanco
   doc.rect(0, 0, W, H).fill(S.colors.white);
 
-  // Logo de la comercializadora recomendada (centrado verticalmente)
-  const logoFile = path.join(LOGOS_DIR, bestResult.tarifa.logo || '');
-  const logoExists = bestResult.tarifa.logo && fs.existsSync(logoFile);
+  // Logo Sí Ahorro en portada (centrado verticalmente)
+  const logoFile = SI_AHORRO_LOGO;
+  const logoExists = fs.existsSync(logoFile);
   const centerY = H / 2;
 
   if (logoExists) {
-    const logoMaxW = 280;
-    const logoMaxH = 120;
+    const logoMaxW = 420;
+    const logoMaxH = 200;
     doc.image(logoFile, (W - logoMaxW) / 2, centerY - logoMaxH / 2, {
       fit: [logoMaxW, logoMaxH],
       align: 'center',

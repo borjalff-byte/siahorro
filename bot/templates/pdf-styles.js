@@ -1,7 +1,7 @@
 module.exports = {
   colors: {
-    teal: '#2D7D6B',         // Verde teal — headers y cifras de ahorro
-    tealLight: '#E8F5F1',    // Fondo sutil filas destacadas
+    teal: '#F97316',         // Naranja Sí Ahorro — headers y cifras de ahorro
+    tealLight: '#FFF7ED',    // Fondo sutil filas destacadas
     text: '#333333',          // Texto principal
     labelGray: '#888888',     // Etiquetas y texto secundario
     lightGray: '#AAAAAA',     // Nombre cliente portada / pie
