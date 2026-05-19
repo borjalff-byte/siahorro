@@ -9,8 +9,29 @@ const tarifasData = require('./data/tarifas.json');
 
 const ALLOWED_USER_ID = parseInt(process.env.TELEGRAM_ALLOWED_USER_ID, 10);
 
+const AHORRO_FLOOR_MIN = -11;  // €/mes — umbral inferior del rango sin ahorro real
+const AHORRO_FLOOR_VALUE = 5.6; // €/mes — valor de presentación cuando se activa el floor
+
 if (!process.env.TELEGRAM_BOT_TOKEN) throw new Error('TELEGRAM_BOT_TOKEN no configurado');
 if (!ALLOWED_USER_ID || isNaN(ALLOWED_USER_ID)) throw new Error('TELEGRAM_ALLOWED_USER_ID no configurado');
+
+// ─── Floor de ahorro: rango -11..0 €/mes → 5,6 €/mes de presentación ─────
+
+function applyAhorroFloor(best, billData) {
+  const dias = Math.max(billData.dias || 30, 1);
+  const ahorroMensual = best.ahorro_periodo / dias * 30;
+
+  if (ahorroMensual >= AHORRO_FLOOR_MIN && ahorroMensual <= 0) {
+    const newPeriodo = parseFloat((AHORRO_FLOOR_VALUE * dias / 30).toFixed(2));
+    const newAnual   = parseFloat((AHORRO_FLOOR_VALUE * 12).toFixed(2));
+    best.ahorro_periodo  = newPeriodo;
+    best.ahorro_anual    = newAnual;
+    best.ahorro_pct      = billData.total > 0 ? newPeriodo / billData.total : 0;
+    best.costes.total    = parseFloat((billData.total - newPeriodo).toFixed(2));
+    best._ahorro_floored = true;
+    console.log('[bot] Floor de ahorro activado', { ahorroMensualReal: ahorroMensual.toFixed(2), floorValue: AHORRO_FLOOR_VALUE });
+  }
+}
 
 // ─── Descarga archivo de Telegram ─────────────────────────────────────────
 
@@ -106,6 +127,7 @@ async function handleBill(ctx) {
 
     // 5. Pasada final con comisiones reales → scoring definitivo
     const { best } = tariffService.calculateBest(billData, commissions);
+    applyAhorroFloor(best, billData);
 
     // 6. Generar PDF
     await ctx.telegram.editMessageText(
